@@ -11,7 +11,6 @@ export class GridFsMulterConfigService implements MulterOptionsFactory {
             url:configService.get<string>('MONGODB_URI') ,
             file: (req, file) => {
                 return new Promise((resolve, reject) => {
-                    console.log('module')
                     const filename = file.originalname.trim();
                     const fileInfo = {
                       filename: filename

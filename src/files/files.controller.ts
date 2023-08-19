@@ -8,9 +8,10 @@ import { FileResponseVm } from './model/file-response-vm.model';
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
   
-  @Post('')
+  @Post(':userId')
   @UseInterceptors(FilesInterceptor('file'))
-  upload(@UploadedFiles() files) {
+ async upload(@UploadedFiles() files,@Param() param:{userId:string}): Promise<any[]> {
+    const  {userId} = param
       const response = [];
       files.forEach(file => {
           const fileReponse = {
@@ -27,13 +28,14 @@ export class FilesController {
               uploadDate: file.uploadDate,
               contentType: file.contentType,
           };
+         
           response.push(fileReponse);
       });
+      await this.filesService.userInfoToFile(userId,files)
       return response;
   }
   @Get('info/:id')
-  async getFileInfo(@Param('id') id: string): Promise<FileResponseVm> { 
-    console.log('not')      
+  async getFileInfo(@Param('id') id: string): Promise<FileResponseVm> {     
       const file = await this.filesService.findInfo(id)
       const filestream = await this.filesService.readStream(id)
       if(!filestream){

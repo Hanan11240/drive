@@ -7,6 +7,7 @@ import { FileInfoVm } from './model/fileINfoVm';
 
 @Injectable()
 export class FilesService{
+ 
     private fileModel: MongoGridFS;
 
 
@@ -32,5 +33,9 @@ async readStream(id: string): Promise<GridFSBucketReadStream> {
   async deleteFile(id: string): Promise<boolean>{
     return await this.fileModel.delete(id)
   }
+
+ async userInfoToFile(userId,files) {
+  
+}
 
 }
