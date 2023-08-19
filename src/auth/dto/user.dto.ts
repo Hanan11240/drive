@@ -1,5 +1,5 @@
-import { ValidationPipe } from '@nestjs/common';
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+
+import { IsArray, IsEmail, IsNotEmpty, IsOptional, IsString, isArray } from 'class-validator';
 export class UserDTO {
   @IsString()
   @IsNotEmpty()
@@ -13,4 +13,8 @@ export class UserDTO {
   password: string;
   @IsOptional()
   AllocatedSpace: number;
+
+  @IsOptional()
+  @IsArray()
+  fileIds:string[]
 }

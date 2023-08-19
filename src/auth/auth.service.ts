@@ -13,7 +13,6 @@ export class AuthService {
     const {email} = userModel
     const query = {email:email}
     const userExists = await this.userModelDto.findOne(query)
-
     if(userExists)
     throw new HttpException('User exists',HttpStatus.BAD_REQUEST)
 

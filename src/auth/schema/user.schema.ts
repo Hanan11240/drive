@@ -5,4 +5,5 @@ export const UserSchema = new mongoose.Schema({
     name:String,
     password:String,
     AllocatedSpace:{type:Number,default:1024},
+    fileIds:[mongoose.Schema.Types.ObjectId]
 })

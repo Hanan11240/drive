@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
+import { FoldersModule } from './folders/folders.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -23,7 +24,8 @@ import { AuthModule } from './auth/auth.module';
     },
   }),
   FilesModule,
-  AuthModule
+  AuthModule,
+  FoldersModule
 ],
   controllers: [AppController],
   providers: [AppService],
