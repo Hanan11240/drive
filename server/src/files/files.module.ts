@@ -8,10 +8,11 @@ import { UserSchema } from 'src/auth/schema/user.schema';
 
 @Module({
   imports: [
-    MulterModule.registerAsync({ useClass: GridFsMulterConfigService }),
+    MulterModule.registerAsync({ useClass: GridFsMulterConfigService,imports:[FilesModule] }),
     MongooseModule.forFeature([{ name: 'users', schema: UserSchema }]),
   ],
   controllers: [FilesController],
   providers: [FilesService, GridFsMulterConfigService],
+  exports:[FilesService]
 })
 export class FilesModule {}

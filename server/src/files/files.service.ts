@@ -47,9 +47,18 @@ export class FilesService {
     return;
   }
 
-  async userExhaustedSapceLimit(param,fileSize):Promise<boolean>{
-    console.log(param)
-    console.log(fileSize)
+  async userExhaustedSapceLimit(params:{userId:string},fileSize):Promise<boolean>{
+    const {userId} = params
+    const query = {_id:userId}
+          const userExists = await this.userModelDto.findOne(query);
+          if(!userExists)
+          throw new HttpException('User not found',HttpStatus.BAD_REQUEST)
+
+        if(userExists.spaceConsumed === userExists.AllocatedSpace)
+        throw new HttpException('Limit exhausted',HttpStatus.BAD_REQUEST)
+      if(userExists.spaceConsumed + fileSize >= userExists.AllocatedSpace)
+      throw new HttpException('Cannot upload not enough space',HttpStatus.BAD_REQUEST)
+
     return false
   }
 }

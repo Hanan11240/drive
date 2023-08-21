@@ -1,5 +1,5 @@
 
-import { IsArray, IsEmail, IsNotEmpty, IsOptional, IsString, isArray } from 'class-validator';
+import { IsArray, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, isArray } from 'class-validator';
 export class UserDTO {
   @IsString()
   @IsNotEmpty()
@@ -17,4 +17,8 @@ export class UserDTO {
   @IsOptional()
   @IsArray()
   fileIds:string[]
+
+  @IsOptional()
+  @IsNumber()
+  spaceConsumed:number
 }
