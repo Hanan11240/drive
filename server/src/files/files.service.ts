@@ -46,4 +46,10 @@ export class FilesService {
     await this.userModelDto.findOneAndUpdate(query, update);
     return;
   }
+
+  async userExhaustedSapceLimit(param,fileSize):Promise<boolean>{
+    console.log(param)
+    console.log(fileSize)
+    return false
+  }
 }

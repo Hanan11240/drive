@@ -4,6 +4,6 @@ export const UserSchema = new mongoose.Schema({
     email:String,
     name:String,
     password:String,
-    AllocatedSpace:{type:Number,default:1024},
+    AllocatedSpace:{type:Number,default:1073741824}, //in bytes 1Gb
     fileIds:[mongoose.Schema.Types.ObjectId]
 })
