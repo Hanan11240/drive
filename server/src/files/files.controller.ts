@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, HttpStatus, Logger, Param, Post, Res, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, Get, HttpException, HttpStatus, Logger, Param, Post, Res, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { FileResponseVm } from './model/file-response-vm.model';
@@ -71,13 +71,15 @@ export class FilesController {
         res.header('Content-Disposition', 'attachment; filename=' + file.filename);
         return filestream.pipe(res) 
     }
-    @Get('delete/:id')
-    async deleteFile(@Param('id') id: string): Promise<FileResponseVm> {
+    @Delete('delete/:id/:userId')
+    async deleteFile(@Param()  param:{userId:string,id:string}): Promise<FileResponseVm> {
+        const {id,userId} = param
         const file = await this.filesService.findInfo(id)
         const filestream = await this.filesService.deleteFile(id)
         if(!filestream){
             throw new HttpException('An error occurred during file deletion', HttpStatus.EXPECTATION_FAILED)
-        }        
+        }      
+        await this.filesService.updateUserConsumedSpace(userId,file)  
         return {
             message: 'File has been deleted',
             file: file

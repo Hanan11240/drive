@@ -1,5 +1,6 @@
 
 import { IsArray, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, isArray } from 'class-validator';
+import { ObjectId } from 'mongoose';
 export class UserDTO {
   @IsString()
   @IsNotEmpty()
@@ -16,9 +17,18 @@ export class UserDTO {
 
   @IsOptional()
   @IsArray()
-  fileIds:string[]
+  fileIds:ObjectId[]
 
   @IsOptional()
   @IsNumber()
   spaceConsumed:number
+
+
+  @IsOptional()
+  @IsArray()
+  folderIds:ObjectId[]
+
+  @IsOptional()
+  @IsNumber()
+  folderNestLimit:number
 }

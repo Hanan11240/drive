@@ -5,9 +5,9 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { ObjectId } from 'mongoose';
+import { ObjectId, isObjectIdOrHexString } from 'mongoose';
 
-export class FolderModel {
+export class FoldersModel {
   @IsString()
   @IsNotEmpty()
   folderName: string;
@@ -17,9 +17,9 @@ export class FolderModel {
   @IsString()
   @IsOptional()
   parentFolderId: ObjectId;
-  @IsArray()
-  folderIds: ObjectId[];
   @IsNumber()
   @IsOptional()
   childNumber: number;
+  @IsString()
+  userId: ObjectId;
 }
