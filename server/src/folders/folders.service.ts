@@ -54,6 +54,17 @@ export class FoldersService {
     return;
   }
   async deleteFolder(folderId: string, userId: string): Promise<void> {
+
+    const folderIds = await this.folderModelDto.find({$or:[{_id:folderId},{parentFolderId:folderId}]})
+    for(const folderId of folderIds){
+      await this.deleteFilesInFolder(folderId._id,userId)
+    }
+  
+    await this.folderModelDto.deleteMany({ _id:{$in:folderIds} });
+    return;
+  }
+
+  async deleteFilesInFolder(folderId:Types.ObjectId,userId:string){
     const fileIds = await this.folderModelDto.findOne(
       { _id: folderId },
       { fileIds: 1, _id: 0 },
@@ -68,8 +79,6 @@ export class FoldersService {
       await this.filesService.deleteFile(idAsString);
       await this.filesService.updateUserConsumedSpace(userId, fileInfo);
     }
-    await this.folderModelDto.deleteOne({ _id: folderId });
-    return;
   }
 
   async renameFolder(folderId: string, userId: string, folderName: string):Promise<void> {

@@ -15,7 +15,7 @@ export class GridFsMulterConfigService implements MulterOptionsFactory {
     this.gridFsStorage = new GridFsStorage({
       url: configService.get<string>('MONGODB_URI'),
       file: async (req, file) => {
-        if (req.headers['content-length'] > 1024 * 1024 *1024 *1024) {
+        if (req.headers['content-length'] > 1024 * 1024) {
           throw new HttpException('File size exceeded', HttpStatus.BAD_REQUEST);
         }
         const limitExausted = await this.fileService.userExhaustedSapceLimit(
