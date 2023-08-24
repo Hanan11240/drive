@@ -1,4 +1,4 @@
-import { Controller, HttpStatus, Post, Res, Body, Delete, Param } from '@nestjs/common';
+import { Controller, HttpStatus, Post, Res, Body, Delete, Param, Patch, Query } from '@nestjs/common';
 import { FoldersService } from './folders.service';
 import { Response } from 'express';
 import { FoldersModel } from './dto/folder..dto';
@@ -15,11 +15,20 @@ export class FoldersController {
     await this.foldersService.createFolder(folder);
     res.status(HttpStatus.OK).json({message:'Success'});
   }
-  @Delete()
-  async deleteFolder(@Res() res:Response,@Param() param:{userId:string,folderId:string}){
-    const {userId,folderId} = param
-    await this.foldersService.deleteFolder(userId,folderId)
+  @Delete(':folderId/:userId')
+  async deleteFolder(@Res() res:Response,@Param() param:{folderId:string,userId:string}){
+    const {folderId,userId} = param
+    await this.foldersService.deleteFolder(folderId,userId)
     res.status(HttpStatus.OK).json({message:'success'})
+  }
 
+  @Patch('rename/:folderId')
+  async renameFolder (@Res() res:Response,@Param() param:{folderId:string},@Query() query:{userId:string},@Body() body:{folderName:string}):Promise<void>{
+
+    const {folderId} = param
+    const {userId} = query
+    const {folderName} = body
+    await this.foldersService.renameFolder(folderId,userId,folderName)
+    res.status(HttpStatus.OK).json({message:'success'})
   }
 }

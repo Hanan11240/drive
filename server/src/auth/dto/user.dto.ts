@@ -24,9 +24,9 @@ export class UserDTO {
   spaceConsumed:number
 
 
-  @IsOptional()
-  @IsArray()
-  folderIds:ObjectId[]
+  // @IsOptional()
+  // @IsArray()
+  // folderIds:ObjectId[]
 
   @IsOptional()
   @IsNumber()

@@ -5,6 +5,7 @@ import mongoose, { Connection, Model } from 'mongoose';
 import { GridFSBucketReadStream } from 'mongodb';
 import { FileInfoVm } from './model/fileINfoVm';
 import { UserDTO } from 'src/auth/dto/user.dto';
+import { FoldersModel } from 'src/folders/dto/folder..dto';
 
 @Injectable()
 export class FilesService {
@@ -13,6 +14,7 @@ export class FilesService {
   constructor(
     @InjectConnection() private readonly connection: Connection,
     @InjectModel('users') private userModelDto: Model<UserDTO>,
+    @InjectModel('folders') private folderModel:Model<FoldersModel>
   ) {
     this.fileModel = new MongoGridFS(this.connection.db, 'fs');
   }
@@ -35,11 +37,11 @@ export class FilesService {
     };
   }
 
-  async deleteFile(id: string): Promise<boolean> {
+  async deleteFile(id: string ): Promise<boolean> {
     return await this.fileModel.delete(id);
   }
 
-  async userInfoToFile(userId: string, files) {
+  async userInfoToFile(userId: string, files,folderId:string) {
     const fileInfo: { totalSize: number; fileIds: string[] } = files.reduce(
       (accumulator, file) => {
         accumulator.fileIds.push(file.id);
@@ -49,12 +51,16 @@ export class FilesService {
       { fileIds: [], totalSize: 0 },
     );
     const { fileIds, totalSize } = fileInfo;
-    const query = { _id: userId };
+    const userQuery = { _id:  userId };
+    const folderQuery = { _id:  folderId };
     const update = {
       $push: { fileIds: fileIds },
       $inc: { spaceConsumed: totalSize },
     };
-    await this.userModelDto.findOneAndUpdate(query, update);
+    await this.userModelDto.findOneAndUpdate(userQuery, update);
+    if(folderId)
+    await this.folderModel.findByIdAndUpdate(folderQuery,{$push:{fileIds:fileIds}})
+    
     return;
   }
 

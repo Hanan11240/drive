@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, HttpException, HttpStatus, Logger, Param, Post, Res, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, Get, HttpException, HttpStatus, Logger, Param, Post, Query, Res, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { FileResponseVm } from './model/file-response-vm.model';
@@ -10,8 +10,9 @@ export class FilesController {
   
   @Post(':userId')
   @UseInterceptors(FilesInterceptor('file'))
- async upload(@UploadedFiles() files,@Param() param:{userId:string}): Promise<any[]> {
+ async upload(@UploadedFiles() files,@Param() param:{userId:string},@Query() query:{folderId:string}): Promise<any[]> {
     const  {userId} = param
+    const {folderId} = query
       const response = [];
       files.forEach(file => {
           const fileReponse = {
@@ -31,7 +32,7 @@ export class FilesController {
          
           response.push(fileReponse);
       });
-      await this.filesService.userInfoToFile(userId,files)
+      await this.filesService.userInfoToFile(userId,files,folderId)
       return response;
   }
   @Get('info/:id')
