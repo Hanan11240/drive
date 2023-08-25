@@ -2,12 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserDTO } from './dto/user.dto';
 import { Model } from 'mongoose';
+import { MailService } from 'src/utils/mail/mail.service';
+
 
 @Injectable()
 export class AuthService {
  
  
- constructor(@InjectModel('users') private userModelDto:Model<UserDTO>){}
+ constructor(@InjectModel('users') private userModelDto:Model<UserDTO>,private mailerService:MailService){}
   async signUp(userModel:UserDTO){
 
     const {email} = userModel
@@ -17,7 +19,6 @@ export class AuthService {
     throw new HttpException('User exists',HttpStatus.BAD_REQUEST)
 
     const newUser = new this.userModelDto(userModel).save();
-
     return 
 
  }
