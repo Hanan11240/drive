@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
 import { FoldersModule } from './folders/folders.module';
+import { ShareFilesModule } from './share-files/share-files.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -25,7 +26,8 @@ import { FoldersModule } from './folders/folders.module';
   }),
   FilesModule,
   AuthModule,
-  FoldersModule
+  FoldersModule,
+  ShareFilesModule
 ],
   controllers: [AppController],
   providers: [AppService],
