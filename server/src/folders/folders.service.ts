@@ -55,29 +55,27 @@ export class FoldersService {
   }
   async deleteFolder(folderId: string, userId: string): Promise<void> {
 
-    const folderIds = await this.folderModelDto.find({$or:[{_id:folderId},{parentFolderId:folderId}]})
-    for(const folderId of folderIds){
-      await this.deleteFilesInFolder(folderId._id,userId)
-    }
-  
-    await this.folderModelDto.deleteMany({ _id:{$in:folderIds} });
+    const hasSubFolder = await this.folderModelDto.exists({parentFolderId:new Types.ObjectId(folderId)})
+    if(hasSubFolder)
+    throw new HttpException('Folder has subfoleder delete that first',HttpStatus.BAD_REQUEST)
+    await this.deleteFilesInFolder(folderId,userId)
+    await this.folderModelDto.deleteOne({ _id:folderId });
     return;
   }
 
-  async deleteFilesInFolder(folderId:Types.ObjectId,userId:string){
+  async deleteFilesInFolder(folderId:string,userId:string){
+   
     const fileIds = await this.folderModelDto.findOne(
       { _id: folderId },
       { fileIds: 1, _id: 0 },
     );
-    if (!fileIds) {
-      throw new HttpException('No folder found', HttpStatus.BAD_REQUEST);
-    }
+   
     const { fileIds: ids } = fileIds;
     for (const id of ids) {
       const idAsString = (id as ObjectId).toString();
       const fileInfo = await this.filesService.findInfo(idAsString);
       await this.filesService.deleteFile(idAsString);
-      await this.filesService.updateUserConsumedSpace(userId, fileInfo);
+      await this.filesService.updateUserConsumedSpace(userId, fileInfo,idAsString);
     }
   }
 

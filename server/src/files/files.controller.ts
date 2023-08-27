@@ -80,7 +80,7 @@ export class FilesController {
         if(!filestream){
             throw new HttpException('An error occurred during file deletion', HttpStatus.EXPECTATION_FAILED)
         }      
-        await this.filesService.updateUserConsumedSpace(userId,file)  
+        await this.filesService.updateUserConsumedSpace(userId,file,id)  
         return {
             message: 'File has been deleted',
             file: file

@@ -41,7 +41,7 @@ export class FilesService {
     return await this.fileModel.delete(id);
   }
 
-  async userInfoToFile(userId: string, files,folderId:string) {
+  async userInfoToFile(userId: string, files,folderId:string):Promise<void> {
     const fileInfo: { totalSize: number; fileIds: string[] } = files.reduce(
       (accumulator, file) => {
         accumulator.fileIds.push(file.id);
@@ -79,9 +79,10 @@ export class FilesService {
     return false;
   }
 
-  async updateUserConsumedSpace(userId: string, file: FileInfoVm) {
+  async updateUserConsumedSpace(userId: string, file: FileInfoVm,fileId:string) {
+
     const {length} = file
-     await this.userModelDto.findByIdAndUpdate({_id:userId},{$inc:{spaceConsumed
+     await this.userModelDto.findByIdAndUpdate({_id:userId},{$pull:{fileIds:fileId},$inc:{spaceConsumed
       :-length}})
     return;
   }
