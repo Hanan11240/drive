@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../auth.service';
+import { AuthModel } from '../model/user.model';
+import { SuccessMessage } from 'src/app/utils/models/utilsModel';
 
 @Component({
   selector: 'app-login',
@@ -21,13 +24,19 @@ export class LoginComponent {
     password: ['', [Validators.required, Validators.minLength(8)]]
   });
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: NonNullableFormBuilder,private authService:AuthService) { }
 
   ngOnInit(): void {
 
   }
 
   onSubmit() {
-
-  }
+    
+    this.authService.login(this.loginForm.value as AuthModel).subscribe({
+      next:(response:{_id:string})=>{
+          console.log(response._id)
+      },
+      error:()=>{}
+    })
+}
 }

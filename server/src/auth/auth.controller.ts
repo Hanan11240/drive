@@ -17,6 +17,6 @@ export class AuthController {
   @Post('login')
   async login(@Res() res:Response,@Body() authModel:Pick<UserDTO,'email' | 'password'>){
    const user =  await this.authService.login(authModel)
-    res.status(HttpStatus.OK).json(user)
+    res.status(HttpStatus.OK).json({_id:user})
   }
 }

@@ -26,11 +26,11 @@ async login(authModel: Pick<UserDTO, "email" | "password">) {
  const {email,password}= authModel;
  const query = {email:email,password:password}
 
- const userExists = await this.userModelDto.findOne(query,{password:0})
+ const userExists = await this.userModelDto.findOne(query,{password:0,})
  
  if(!userExists)
  throw new HttpException('Incorrect credentials',HttpStatus.UNAUTHORIZED);
 
- return userExists
+ return userExists._id
 }
 }
