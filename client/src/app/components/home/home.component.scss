@@ -1,7 +1,7 @@
 .landing-page {
     font-family: 'Arial', sans-serif;
     margin: 0 auto;
-    height: 50vh;
+    height: 85vh;
    
 }
 
@@ -17,6 +17,7 @@
 .hero .hero-text {
     flex: 1;
     padding-right: 50px;
+    padding-left: 10px ;
 }
 
 .hero .hero-image {
@@ -42,13 +43,4 @@ button.cta {
 button.cta:hover {
     background-color: #0056b3;
 }
-.image-container{
-width: 100%;
-height: 100%;
-}
-img{
-    height: 100%;
-    width: 100%;
-    object-fit:cover;
 
-}

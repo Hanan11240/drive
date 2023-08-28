@@ -9,6 +9,12 @@ export const APP_ROUTE: Routes = [
  
  }, 
 
+ {
+  path:'auth',
+  loadChildren:()=> import('./components/auth/auth.routing').then(app=> app.Auth_ROUTE)
+ 
+ }, 
+
   {
     path:'**',
     redirectTo:'error/not-found'
