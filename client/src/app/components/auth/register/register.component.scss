@@ -16,13 +16,14 @@
   
   .button-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     margin-top: 20px;
   }
   
   .extra-links {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-top: 20px;
   }
   

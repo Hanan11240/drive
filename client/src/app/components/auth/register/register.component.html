@@ -17,10 +17,13 @@
   
       <div class="button-container">
         <button mat-raised-button color="primary" type="submit">Register</button>
+        <button mat-raised-button color="primary"  [routerLink]="['/home']">Home</button>
+
       </div>
   
       <div class="extra-links">
-        <a mat-button [routerLink]="['/auth/login']">Already have an account? Login</a>
+        Already have an account?
+        <a mat-button [routerLink]="['/auth/login']"> Login</a>
       </div>
     </form>
   </div>

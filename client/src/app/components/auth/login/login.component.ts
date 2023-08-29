@@ -8,11 +8,12 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { AuthModel } from '../model/user.model';
 import { SuccessMessage } from 'src/app/utils/models/utilsModel';
+import { UtilService } from 'src/app/utils/Services/utils.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule,RouterModule],
+  imports: [CommonModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -24,19 +25,26 @@ export class LoginComponent {
     password: ['', [Validators.required, Validators.minLength(8)]]
   });
 
-  constructor(private formBuilder: NonNullableFormBuilder,private authService:AuthService) { }
+  constructor(private formBuilder: NonNullableFormBuilder, private authService: AuthService, private utilsService: UtilService) { }
 
   ngOnInit(): void {
-
+    this.utilsService.showNavBar$.next(false)
+    this.utilsService.showFooter$.next(false)
   }
 
   onSubmit() {
-    
+
     this.authService.login(this.loginForm.value as AuthModel).subscribe({
-      next:(response:{_id:string})=>{
-          console.log(response._id)
+      next: (response: { _id: string }) => {
+        console.log(response._id)
       },
-      error:()=>{}
+      error: () => { }
     })
-}
+  }
+
+  ngOnDestroy() {
+    this.utilsService.showNavBar$.next(true)
+    this.utilsService.showFooter$.next(true)
+
+  }
 }
