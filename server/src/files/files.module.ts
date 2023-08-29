@@ -4,7 +4,7 @@ import { FilesController } from './files.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { GridFsMulterConfigService } from './multer-config.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from 'src/auth/schema/user.schema';
+import { UserSchema } from 'src/auth/schema/UserSchema';
 import { FolderSchema } from 'src/folders/schema/folder.schema';
 
 @Module({
