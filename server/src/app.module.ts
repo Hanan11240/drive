@@ -10,14 +10,15 @@ import { ShareFilesModule } from './share-files/share-files.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
-    envFilePath: `.env.${process.env.NODE_ENV}`,
+    // envFilePath: `.env.${process.env.NODE_ENV}`,
     isGlobal: true,
     cache: true,
   }),
   MongooseModule.forRootAsync({
     inject:[ConfigService],
     useFactory: (configService: ConfigService) => {
-      const resolvedMongoUri = configService.get<string>('MONGODB_URI');
+      // const resolvedMongoUri = configService.get<string>('MONGODB_URI');
+      const resolvedMongoUri = 'mongodb+srv://peerzadahanannaseer:FSKnueO63bi7ONs3@drivecloud.zivw3uz.mongodb.net/?retryWrites=true&w=majority'
       console.log('Resolved MongoDB URI:', resolvedMongoUri);
       return {
         uri: resolvedMongoUri,
