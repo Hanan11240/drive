@@ -11,4 +11,8 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+  @Get('cats')
+  getCats():string[]{
+    return ['a','b','c']
+  }
 }

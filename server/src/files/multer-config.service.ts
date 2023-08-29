@@ -13,8 +13,8 @@ export class GridFsMulterConfigService implements MulterOptionsFactory {
 
   constructor(configService: ConfigService,private fileService:FilesService ) {
     this.gridFsStorage = new GridFsStorage({
-      // url: configService.get<string>('MONGODB_URI'),
-      url: 'mongodb+srv://peerzadahanannaseer:FSKnueO63bi7ONs3@drivecloud.zivw3uz.mongodb.net/?retryWrites=true&w=majority',
+      url: configService.get<string>('MONGODB_URI'),
+      // url: 'mongodb+srv://peerzadahanannaseer:FSKnueO63bi7ONs3@drivecloud.zivw3uz.mongodb.net/?retryWrites=true&w=majority',
       file: async (req, file) => {
         if (req.headers['content-length'] > 1024 * 1024) {
           throw new HttpException('File size exceeded', HttpStatus.BAD_REQUEST);
