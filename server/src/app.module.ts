@@ -10,6 +10,7 @@ import { ShareFilesModule } from './share-files/share-files.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
+    envFilePath: `.env.${process.env.NODE_ENV}`,
     isGlobal: true,
     cache: true,
   }),
