@@ -1,0 +1,14 @@
+<div class="dashboard">
+    <div class="mt-3 ms-3">Folder Title</div>
+    <div class="folders mt-2 ms-3 ">
+        <app-view-folders class="view-folder" *ngFor="let folder of folders" [folder]="folder"></app-view-folders>
+    </div>
+    <div>Files title</div>
+    <div class="files">
+        <app-view-files ></app-view-files>
+    </div>
+    <div>Shared files</div>
+    <div class="shared-files">
+        <app-shared-files></app-shared-files>
+    </div>
+  </div>

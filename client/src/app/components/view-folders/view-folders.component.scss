@@ -1,0 +1,16 @@
+.folder-container{
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+    width: 169px;
+    margin-right: 10px;
+    background-color: #d4e5ff;
+    border-radius:5px;
+    padding: 5px;
+    
+    
+}
+.folder-container:hover{
+    border: 1px solid  #0B57D0;
+    cursor: pointer;
+}
