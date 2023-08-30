@@ -7,14 +7,12 @@ import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
 import { FoldersModule } from './folders/folders.module';
 import { ShareFilesModule } from './share-files/share-files.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+
 
 
 @Module({
-  imports: [ ServeStaticModule.forRoot({
-    rootPath: join(__dirname, '..', 'client'),
-  }),ConfigModule.forRoot({
+  imports: [ 
+ConfigModule.forRoot({
     envFilePath: `.env.${process.env.NODE_ENV}`,
     isGlobal: true,
     cache: true,
