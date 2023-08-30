@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 })
 export class AuthService {
 
-  const serverUrl = environment.serverUrl
+  serverUrl = environment.serverUrl
   constructor(private http:HttpClient) { }
 
 
