@@ -38,7 +38,6 @@ export class RegisterComponent {
 
     this.authService.register(this.registrationForm.value as UserModel).subscribe({
       next: (response: SuccessMessage) => {
-        console.log(response.message)
       },
       error: () => { }
     })

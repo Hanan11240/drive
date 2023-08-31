@@ -36,7 +36,7 @@ export class LoginComponent {
 
     this.authService.login(this.loginForm.value as AuthModel).subscribe({
       next: (response: { _id: string }) => {
-        console.log(response._id)
+        localStorage.setItem('userId',response._id)
       },
       error: () => { }
     })

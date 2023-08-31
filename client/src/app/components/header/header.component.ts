@@ -16,7 +16,6 @@ constructor(private utilsService:UtilService){}
   ngOnInit(): void {
     this.utilsService.showNavBar$.subscribe({
       next:(value:boolean)=>{
-        console.log(value)
         this.showHeader = value
       }
     })
