@@ -98,4 +98,8 @@ export class FilesService {
     );
     return;
   }
+
+  async parentFiles(userId:string){
+    
+  }
 }

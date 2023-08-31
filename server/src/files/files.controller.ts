@@ -2,7 +2,7 @@ import { Controller, Delete, Get, HttpException, HttpStatus, Logger, Param, Post
 import { FilesService } from './files.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { FileResponseVm } from './model/file-response-vm.model';
-
+import { Response } from 'express';
 
 @Controller('files')
 export class FilesController {
@@ -85,5 +85,12 @@ export class FilesController {
             message: 'File has been deleted',
             file: file
         }
+    }
+    @Get('parent-files/:userId')
+    async parentFiles(@Param() param:{userId:string},@Res() res:Response):Promise<void>{
+      const {userId} = param
+      const parentFolders = await this.filesService.parentFiles(userId);
+      res.status(HttpStatus.OK).json(parentFolders)
+  
     }
 }
