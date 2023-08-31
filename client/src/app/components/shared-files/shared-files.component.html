@@ -1,1 +1,10 @@
-<p>shared-files works!</p>
+<div class="dashboard">
+    <div class="mt-3 ms-3">Folder Title</div>
+    <div class="folders mt-2 ms-3 ">
+        <app-view-folders class="view-folder" *ngFor="let folder of folders" [folder]="folder"></app-view-folders>
+    </div>
+    <div class="mt-3 ms-3">Files title</div>
+    <div class="files mt-2 ms-3">
+        <app-view-files *ngFor="let file of files" [file]="file" ></app-view-files>
+    </div> 
+  </div>

@@ -18,6 +18,10 @@ export const APP_ROUTE: Routes = [
     path: 'dashboard',
     loadComponent: () => import('./components/dashboard/dashboard.component').then(app => app.DashboardComponent)
   },
+  {
+    path: 'shared-with-me',
+    loadComponent: () => import('./components/shared-files/shared-files.component').then(app => app.SharedFilesComponent)
+  },
 
   {
     path: '**',
