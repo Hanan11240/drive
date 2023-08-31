@@ -17,7 +17,7 @@ export class UserDTO {
 
   @IsOptional()
   @IsArray()
-  fileIds:ObjectId[]
+  fileIds:fileType[]
 
   @IsOptional()
   @IsNumber()
@@ -31,4 +31,9 @@ export class UserDTO {
   @IsOptional()
   @IsNumber()
   folderNestLimit:number
+}
+
+interface fileType{
+  fileId:string;
+  isParent:boolean
 }

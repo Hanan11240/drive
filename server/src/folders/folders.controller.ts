@@ -1,4 +1,4 @@
-import { Controller, HttpStatus, Post, Res, Body, Delete, Param, Patch, Query } from '@nestjs/common';
+import { Controller, HttpStatus, Post, Res, Body, Delete, Param, Patch, Query, Get } from '@nestjs/common';
 import { FoldersService } from './folders.service';
 import { Response } from 'express';
 import { FoldersModel } from './dto/folder..dto';
@@ -30,5 +30,12 @@ export class FoldersController {
     const {folderName} = body
     await this.foldersService.renameFolder(folderId,userId,folderName)
     res.status(HttpStatus.OK).json({message:'success'})
+  }
+  @Get('parent-folders/:userId')
+  async parentFolders(@Param() param:{userId:string},@Res() res:Response):Promise<void>{
+    const {userId} = param
+    const parentFolders = await this.foldersService.parentFolders(userId);
+    res.status(HttpStatus.OK).json(parentFolders)
+
   }
 }

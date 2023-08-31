@@ -54,32 +54,43 @@ export class FoldersService {
     return;
   }
   async deleteFolder(folderId: string, userId: string): Promise<void> {
-
-    const hasSubFolder = await this.folderModelDto.exists({parentFolderId:new Types.ObjectId(folderId)})
-    if(hasSubFolder)
-    throw new HttpException('Folder has subfoleder delete that first',HttpStatus.BAD_REQUEST)
-    await this.deleteFilesInFolder(folderId,userId)
-    await this.folderModelDto.deleteOne({ _id:folderId });
+    const hasSubFolder = await this.folderModelDto.exists({
+      parentFolderId: new Types.ObjectId(folderId),
+    });
+    if (hasSubFolder)
+      throw new HttpException(
+        'Folder has subfoleder delete that first',
+        HttpStatus.BAD_REQUEST,
+      );
+    await this.deleteFilesInFolder(folderId, userId);
+    await this.folderModelDto.deleteOne({ _id: folderId });
     return;
   }
 
-  async deleteFilesInFolder(folderId:string,userId:string){
-   
+  async deleteFilesInFolder(folderId: string, userId: string) {
     const fileIds = await this.folderModelDto.findOne(
       { _id: folderId },
       { fileIds: 1, _id: 0 },
     );
-   
+
     const { fileIds: ids } = fileIds;
     for (const id of ids) {
       const idAsString = (id as ObjectId).toString();
       const fileInfo = await this.filesService.findInfo(idAsString);
       await this.filesService.deleteFile(idAsString);
-      await this.filesService.updateUserConsumedSpace(userId, fileInfo,idAsString);
+      await this.filesService.updateUserConsumedSpace(
+        userId,
+        fileInfo,
+        idAsString,
+      );
     }
   }
 
-  async renameFolder(folderId: string, userId: string, folderName: string):Promise<void> {
+  async renameFolder(
+    folderId: string,
+    userId: string,
+    folderName: string,
+  ): Promise<void> {
     const { childNumber } = await this.folderModelDto.findOne({
       _id: folderId,
     });
@@ -97,5 +108,13 @@ export class FoldersService {
       { $set: { folderName: folderName } },
     );
     return;
+  }
+
+  async parentFolders(userId: string):Promise<FoldersModel[]> {
+    const parentFolders = await this.folderModelDto.find(
+      { userId: new Types.ObjectId(userId), childNumber: 0 },
+      { fileIds: 0, childNumber: 0, parentFolderId: 0 },
+    );
+    return parentFolders;
   }
 }

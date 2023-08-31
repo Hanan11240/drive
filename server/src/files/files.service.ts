@@ -14,7 +14,7 @@ export class FilesService {
   constructor(
     @InjectConnection() private readonly connection: Connection,
     @InjectModel('users') private userModelDto: Model<UserDTO>,
-    @InjectModel('folders') private folderModel:Model<FoldersModel>
+    @InjectModel('folders') private folderModel: Model<FoldersModel>,
   ) {
     this.fileModel = new MongoGridFS(this.connection.db, 'fs');
   }
@@ -37,30 +37,37 @@ export class FilesService {
     };
   }
 
-  async deleteFile(id: string ): Promise<boolean> {
+  async deleteFile(id: string): Promise<boolean> {
     return await this.fileModel.delete(id);
   }
 
-  async userInfoToFile(userId: string, files,folderId:string):Promise<void> {
-    const fileInfo: { totalSize: number; fileIds: string[] } = files.reduce(
+  async userInfoToFile(userId: string, files, folderId: string): Promise<void> {
+    const fileInfo: {
+      totalSize: number;
+      fileIds: { fileId: string; isParent: boolean }[] | string;
+    } = files.reduce(
       (accumulator, file) => {
-        accumulator.fileIds.push(file.id);
+        folderId
+          ? accumulator.fileIds.push(file.id)
+          : accumulator.fileIds.push({ fileId: file.id, isParent: true });
         accumulator.totalSize += file.size;
         return accumulator;
       },
       { fileIds: [], totalSize: 0 },
     );
     const { fileIds, totalSize } = fileInfo;
-    const userQuery = { _id:  userId };
-    const folderQuery = { _id:  folderId };
+    const userQuery = { _id: userId };
+    const folderQuery = { _id: folderId };
     const update = {
       $push: { fileIds: fileIds },
       $inc: { spaceConsumed: totalSize },
     };
     await this.userModelDto.findOneAndUpdate(userQuery, update);
-    if(folderId)
-    await this.folderModel.findByIdAndUpdate(folderQuery,{$push:{fileIds:fileIds}})
-    
+    if (folderId)
+      await this.folderModel.findByIdAndUpdate(folderQuery, {
+        $push: { fileIds: fileIds },
+      });
+
     return;
   }
 
@@ -79,11 +86,16 @@ export class FilesService {
     return false;
   }
 
-  async updateUserConsumedSpace(userId: string, file: FileInfoVm,fileId:string) {
-
-    const {length} = file
-     await this.userModelDto.findByIdAndUpdate({_id:userId},{$pull:{fileIds:fileId},$inc:{spaceConsumed
-      :-length}})
+  async updateUserConsumedSpace(
+    userId: string,
+    file: FileInfoVm,
+    fileId: string,
+  ) {
+    const { length } = file;
+    await this.userModelDto.findByIdAndUpdate(
+      { _id: userId },
+      { $pull: { fileIds: fileId }, $inc: { spaceConsumed: -length } },
+    );
     return;
   }
 }
