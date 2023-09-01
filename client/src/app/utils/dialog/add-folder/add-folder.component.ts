@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, Validators } from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
-import {MatDialogModule } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 @Component({
   selector: 'app-add-folder',
   standalone: true,
@@ -14,12 +14,12 @@ import {MatDialogModule } from '@angular/material/dialog';
 })
 export class AddFolderComponent {
 
-  constructor(private fb:NonNullableFormBuilder){}
+  constructor(private fb:NonNullableFormBuilder,private dialogRef:MatDialogRef<AddFolderComponent>){}
   folderForm  =  this.fb.group({
-    formName:['',Validators.required]
+    folderName:['',Validators.required]
   })
 
   addFolder(){
-    
+    this.dialogRef.close({folderName:this.folderForm.get('folderName')?.value})
   }
 }

@@ -13,4 +13,8 @@ export class DashboardService {
   getFolders(userId: string) {
     return this.http.get<FolderModel[]>(`${this.serverUrl}folders/parent-folders/${userId}`);
   }
+
+  addFolder(folderDetails:Omit<FolderModel, '_id'>){
+   return this.http.post(`${this.serverUrl}folders`,folderDetails)
+  }
 }

@@ -20,21 +20,37 @@ import { AddFolderComponent } from 'src/app/utils/dialog/add-folder/add-folder.c
 })
 export class DashboardComponent {
  folders!:Observable<FolderModel[]>
+ userId!:string
  files=[1,2,3,4]
  constructor(private dashboardService:DashboardService,public dialog: MatDialog){}
  ngOnInit() {
-  const userId = localStorage.getItem('userId')
- this.folders = this.dashboardService.getFolders(userId as string)
+   this.userId = localStorage.getItem('userId') as string
+ this.folders = this.dashboardService.getFolders(this.userId as string)
 }
 
 
-addFolder(){
+addFolderDialog(){
 const dialogRef=this.dialog.open(AddFolderComponent,{
   width:'400px'
 })
 
-    dialogRef.afterClosed().subscribe(result => {
-     console.log(result)
+    dialogRef.afterClosed().subscribe((result:{folderName?:string}) => {
+      const {folderName} = result
+      if(folderName){
+        this.addFolder(folderName)
+      }
     });
+}
+
+addFolder(folderName:string){
+  const folderDetails:Omit<FolderModel, '_id'>={
+    userId:this.userId,
+    folderName:folderName
+  }
+this.dashboardService.addFolder(folderDetails).subscribe({
+  next:()=>{
+    this.folders = this.dashboardService.getFolders(this.userId as string)
+  }
+})
 }
 }
