@@ -13,9 +13,7 @@ export class FoldersService {
     private readonly filesService: FilesService,
   ) {}
 
-  async createFolder(
-    folder: Partial<FoldersModel> & { userId: string },
-  ): Promise<void> {
+  async createFolder(folder: Partial<FoldersModel> & { userId: string }) {
     const { userId, parentFolderId, folderName, childNumber } = folder;
     const query = {
       userId: new Types.ObjectId(userId),
@@ -29,7 +27,16 @@ export class FoldersService {
           'Folder name exists at this level',
           HttpStatus.BAD_REQUEST,
         );
-      new this.folderModelDto(folder).save();
+      return await new this.folderModelDto(folder)
+        .save()
+        .then((savedDocument) => {
+          return {
+            folderName: savedDocument.folderName,
+            _id: savedDocument._id,
+            userId: savedDocument.userId,
+          };
+        })
+        .catch((error) => error);
     } else {
       const [{ childNumber }, { folderNestLimit }] = await Promise.all([
         this.folderModelDto.findOne(
@@ -49,9 +56,17 @@ export class FoldersService {
         );
       folder.childNumber = childNumber + 1;
 
-      new this.folderModelDto(folder).save();
+      return await new this.folderModelDto(folder)
+        .save()
+        .then((savedDocument) => {
+          return {
+            folderName: savedDocument.folderName,
+            _id: savedDocument._id,
+            userId: savedDocument.userId,
+          };
+        })
+        .catch((error) => error);
     }
-    return;
   }
   async deleteFolder(folderId: string, userId: string): Promise<void> {
     const hasSubFolder = await this.folderModelDto.exists({
@@ -110,13 +125,11 @@ export class FoldersService {
     return;
   }
 
-  async parentFolders(userId: string):Promise<FoldersModel[]> {
+  async parentFolders(userId: string): Promise<FoldersModel[]> {
     const parentFolders = await this.folderModelDto.find(
       { userId: new Types.ObjectId(userId), childNumber: 0 },
       { fileIds: 0, childNumber: 0, parentFolderId: 0 },
     );
     return parentFolders;
   }
-
-  
 }

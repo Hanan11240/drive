@@ -12,8 +12,8 @@ export class FoldersController {
     @Res() res: Response,
     @Body() folder: Partial<FoldersModel> & { userId: string },
   ):Promise<void> {
-    await this.foldersService.createFolder(folder);
-    res.status(HttpStatus.OK).json({message:'Success'});
+  const addedFolder =  await this.foldersService.createFolder(folder);
+    res.status(HttpStatus.OK).json(addedFolder);
   }
   @Delete(':folderId/:userId')
   async deleteFolder(@Res() res:Response,@Param() param:{folderId:string,userId:string}){

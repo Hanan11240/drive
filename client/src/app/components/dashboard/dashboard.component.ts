@@ -5,7 +5,7 @@ import { ViewFoldersComponent } from '../view-folders/view-folders.component';
 import { SharedFilesComponent } from '../shared-files/shared-files.component';
 import { DashboardService } from './dashboard.service';
 import { FolderModel } from '../view-folders/models/folder';
-import { Observable, tap } from 'rxjs';
+import { Observable, map, scan, take, tap } from 'rxjs';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import { AddFolderComponent } from 'src/app/utils/dialog/add-folder/add-folder.component';
 
@@ -21,11 +21,12 @@ import { AddFolderComponent } from 'src/app/utils/dialog/add-folder/add-folder.c
 export class DashboardComponent {
  folders!:Observable<FolderModel[]>
  userId!:string
- files=[1,2,3,4]
+ files=[1,2,3,4,5,6,7,8]
  constructor(private dashboardService:DashboardService,public dialog: MatDialog){}
  ngOnInit() {
    this.userId = localStorage.getItem('userId') as string
- this.folders = this.dashboardService.getFolders(this.userId as string)
+   this.folders = this.dashboardService.getFolders(this.userId).pipe(
+  );
 }
 
 
@@ -33,7 +34,6 @@ addFolderDialog(){
 const dialogRef=this.dialog.open(AddFolderComponent,{
   width:'400px'
 })
-
     dialogRef.afterClosed().subscribe((result:{folderName?:string}) => {
       const {folderName} = result
       if(folderName){
@@ -48,8 +48,10 @@ addFolder(folderName:string){
     folderName:folderName
   }
 this.dashboardService.addFolder(folderDetails).subscribe({
-  next:()=>{
-    this.folders = this.dashboardService.getFolders(this.userId as string)
+  next:(response:FolderModel)=>{
+    this.folders = this.folders.pipe(
+      map((folders: FolderModel[]) => [...folders, response])
+    );
   }
 })
 }
