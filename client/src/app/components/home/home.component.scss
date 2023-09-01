@@ -56,5 +56,11 @@ button.ctb {
     transition: background-color 0.3s ease;
 }
 
+@media (min-width: 428px) {
+    .button.ctb {
+     margin-left: 5px;
+    }
+  }
+
 
 

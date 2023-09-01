@@ -5,22 +5,36 @@ import { ViewFoldersComponent } from '../view-folders/view-folders.component';
 import { SharedFilesComponent } from '../shared-files/shared-files.component';
 import { DashboardService } from './dashboard.service';
 import { FolderModel } from '../view-folders/models/folder';
+import { Observable, tap } from 'rxjs';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import { AddFolderComponent } from 'src/app/utils/dialog/add-folder/add-folder.component';
+
+
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule,ViewFilesComponent,ViewFoldersComponent,SharedFilesComponent],
+  imports: [CommonModule,ViewFilesComponent,ViewFoldersComponent,SharedFilesComponent,MatDialogModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
- folders =[1,2,3,4,6,7,8,9,10,11,12,13,14,15]
+ folders!:Observable<FolderModel[]>
  files=[1,2,3,4]
- constructor(private dashboardService:DashboardService){}
+ constructor(private dashboardService:DashboardService,public dialog: MatDialog){}
  ngOnInit() {
   const userId = localStorage.getItem('userId')
-  this.dashboardService.getFolders(userId as string).subscribe({next:(response:FolderModel[])=>{
-    console.log(response)
-  }})
+ this.folders = this.dashboardService.getFolders(userId as string)
+}
+
+
+addFolder(){
+const dialogRef=this.dialog.open(AddFolderComponent,{
+  width:'400px'
+})
+
+    dialogRef.afterClosed().subscribe(result => {
+     console.log(result)
+    });
 }
 }
