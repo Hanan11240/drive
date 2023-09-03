@@ -5,7 +5,11 @@ import { ViewFoldersComponent } from '../view-folders/view-folders.component';
 import { SharedFilesComponent } from '../shared-files/shared-files.component';
 import { DashboardService } from './dashboard.service';
 import { FolderModel } from '../view-folders/models/folder';
-import { Observable, concat, concatMap, map, merge, of, scan, take, tap } from 'rxjs';
+import {
+  Observable,
+  map,
+  of,
+} from 'rxjs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddFolderComponent } from 'src/app/utils/dialog/add-folder/add-folder.component';
 import { FileModel } from '../view-files/models/FileModel';
@@ -28,9 +32,9 @@ import { UploadFileComponent } from '../upload-file/upload-file.component';
 export class DashboardComponent {
   folders$!: Observable<FolderModel[]>;
   userId!: string;
-
   files$!: Observable<FileModel[]>;
   images: string[] = [];
+ 
   constructor(
     private dashboardService: DashboardService,
     public dialog: MatDialog
@@ -65,11 +69,12 @@ export class DashboardComponent {
       },
     });
   }
-  updateFiles(event:  FileModel[]) {
-    this.files$.subscribe(currentFiles => {
+  updateFiles(event: FileModel[]) {
+    this.files$.subscribe((currentFiles) => {
       // Combine the current files with the new ones from event
-      const updatedFiles = [...currentFiles || [], ...event];
+      const updatedFiles = [...(currentFiles || []), ...event];
       this.files$ = of(updatedFiles); // Update the files$ observable
+    
     });
   }
 }

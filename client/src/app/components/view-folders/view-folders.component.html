@@ -6,7 +6,7 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item>
+            <button (click)="deleteFolder(folder)" mat-menu-item>
                 <mat-icon>delete_forever</mat-icon>
               <span>Delete</span>
             </button>
@@ -14,7 +14,7 @@
                 <mat-icon>visibility</mat-icon>
               <span>View</span>
             </button>
-            <button mat-menu-item>
+            <button (click)="rename(folder)" mat-menu-item>
                 <mat-icon>create</mat-icon>
               <span>Rename</span>
             </button>

@@ -11,9 +11,11 @@ import { FileModel } from '../view-files/models/FileModel';
   styleUrls: ['./upload-file.component.scss']
 })
 export class UploadFileComponent {
+  uploaded=true
   @Output() uploadedFiles = new EventEmitter<FileModel[]>();
   constructor(private dashboardService:DashboardService){}
   uploadFiles(event:any){
+    this.uploaded=false
     const formData = new FormData()
     for (let i=0;i<event.target.files.length ; i++){
       formData.append('file',event.target.files[i])
@@ -21,7 +23,9 @@ export class UploadFileComponent {
     const userId = localStorage.getItem('userId')
     this.dashboardService.uploadFiles(formData,userId as string).subscribe({
       next:(response:FileModel[])=>{
+        this.uploaded=true
         this.uploadedFiles.emit(response)
+        
       }
     })
   }
