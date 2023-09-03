@@ -1,7 +1,27 @@
 <span class="file-container">
     <span class="header"> 
         <span>{{file.fileName}}</span>
-        <mat-icon>more_vert</mat-icon>
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item>
+                <mat-icon>delete_forever</mat-icon>
+              <span>Delete</span>
+            </button>
+            <button mat-menu-item>
+                <mat-icon>visibility</mat-icon>
+              <span>View</span>
+            </button>
+            <button mat-menu-item>
+                <mat-icon>create</mat-icon>
+              <span>Rename</span>
+            </button>
+            <button mat-menu-item>
+                <mat-icon>share</mat-icon>
+                <span>Share</span>
+              </button>
+          </mat-menu>
     </span>
     <div class="image-container">
         <img src="../../../assets/images/cloud.jpg" alt="image">
