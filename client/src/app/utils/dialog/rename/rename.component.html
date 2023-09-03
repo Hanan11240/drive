@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Add Folder</h2>
+<mat-dialog-content>
+  <form [formGroup]="folderForm">
+    <mat-form-field class="w-100" appearance="outline">
+      <input matInput placeholder="Folder Name" formControlName="folderName">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button class="btn btn-secondary me-2" mat-dialog-close >Cancel</button>
+  <button class="btn btn-primary" (click)="rename()">Rename</button>
+</mat-dialog-actions>
