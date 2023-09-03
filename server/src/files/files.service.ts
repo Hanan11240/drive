@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { MongoGridFS } from 'mongo-gridfs';
-import mongoose, { Connection, Model } from 'mongoose';
+import mongoose, { Connection, Model, Types } from 'mongoose';
 import { GridFSBucketReadStream } from 'mongodb';
 import { FileInfoVm } from './model/fileINfoVm';
 import { UserDTO } from 'src/auth/dto/user.dto';
@@ -42,14 +42,15 @@ export class FilesService {
   }
 
   async userInfoToFile(userId: string, files, folderId: string): Promise<void> {
+
     const fileInfo: {
       totalSize: number;
       fileIds: { fileId: string; isParent: boolean }[] | string;
     } = files.reduce(
       (accumulator, file) => {
         folderId
-          ? accumulator.fileIds.push(file.id)
-          : accumulator.fileIds.push({ fileId: file.id, isParent: true });
+          ? accumulator.fileIds.push({fileId:file.id,fileName:file.originalname})
+          : accumulator.fileIds.push({ fileId: file.id, isParent: true,fileName:file.originalname });
         accumulator.totalSize += file.size;
         return accumulator;
       },
@@ -99,7 +100,46 @@ export class FilesService {
     return;
   }
 
-  async parentFiles(userId:string){
+  async parentFiles(userId: string) {
+    const pipeline = [
+      {
+        $match: {
+          _id: new Types.ObjectId(userId),
+        },
+      },
+      {
+        $project: {
+          _id: 0, // Exclude the "_id" field
+          fileIds: {
+            $map: {
+              input: '$fileIds',
+              as: 'file',
+              in: {
+                fileId: '$$file.fileId',
+                fileName: '$$file.fileName',
+                isParent: '$$file.isParent',
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          fileIds: {
+            $filter: {
+              input: '$fileIds',
+              as: 'file',
+              cond: { $and: [{ $ne: ['$$file.fileId', null] }, '$$file.isParent'] },
+            },
+          },
+        },
+      },
+    ];
     
+    
+
+    const result = await this.userModelDto.aggregate(pipeline);
+    const fileIds = result[0]?.fileIds;
+    return fileIds;
   }
 }
