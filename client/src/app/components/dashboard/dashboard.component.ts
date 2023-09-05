@@ -5,11 +5,7 @@ import { ViewFoldersComponent } from '../view-folders/view-folders.component';
 import { SharedFilesComponent } from '../shared-files/shared-files.component';
 import { DashboardService } from './dashboard.service';
 import { FolderModel } from '../view-folders/models/folder';
-import {
-  Observable,
-  map,
-  of,
-} from 'rxjs';
+import { Observable, map, of } from 'rxjs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddFolderComponent } from 'src/app/utils/dialog/add-folder/add-folder.component';
 import { FileModel } from '../view-files/models/FileModel';
@@ -34,7 +30,7 @@ export class DashboardComponent {
   userId!: string;
   files$!: Observable<FileModel[]>;
   images: string[] = [];
- 
+
   constructor(
     private dashboardService: DashboardService,
     public dialog: MatDialog
@@ -74,7 +70,26 @@ export class DashboardComponent {
       // Combine the current files with the new ones from event
       const updatedFiles = [...(currentFiles || []), ...event];
       this.files$ = of(updatedFiles); // Update the files$ observable
-    
     });
+  }
+
+  folderDeleted(folderDetails: FolderModel) {
+    this.folders$ = this.folders$.pipe(
+      map((folders: FolderModel[]) =>
+        folders.filter((folder) => folder._id !== folderDetails._id)
+      )
+    );
+  }
+
+  renameFolder(folderDetails: { folderId: string; folderName: string }) {
+    this.folders$ = this.folders$.pipe(
+      map((folders: FolderModel[]) => {
+        return folders.map((folder) =>
+          folder._id === folderDetails.folderId
+            ? { ...folder, folderName: folderDetails.folderName }
+            : folder
+        );
+      })
+    );
   }
 }

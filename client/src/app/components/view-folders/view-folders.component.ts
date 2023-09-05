@@ -1,7 +1,6 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
-import { Observable } from 'rxjs';
 import { FolderModel } from './models/folder';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
@@ -17,13 +16,15 @@ import { RenameComponent } from 'src/app/utils/dialog/rename/rename.component';
 })
 export class ViewFoldersComponent {
 @Input() folder!:FolderModel
+@Output() deletedFolder = new EventEmitter<FolderModel>();
+@Output() renamedFolder = new EventEmitter<{folderId:string,folderName:string}>();
 constructor(private folderService:FolderService, public dialog: MatDialog){}
 
 deleteFolder(folderDetails:FolderModel){
   
   this.folderService.deleteFolder(folderDetails).subscribe({
     next:(response:any)=>{
-      console.log(response)
+      this.deletedFolder.emit(folderDetails)
     },
     error:(error:any)=>{
 
@@ -35,7 +36,7 @@ renameFolder(folderId:string,folderName:string){
   
   this.folderService.renameFolder(folderId,folderName).subscribe({
     next:(response:any)=>{
- 
+      this.renamedFolder.emit({folderId,folderName})
     },error:(error:any)=>{
       
     }

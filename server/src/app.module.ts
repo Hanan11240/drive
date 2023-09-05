@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -7,6 +7,7 @@ import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
 import { FoldersModule } from './folders/folders.module';
 import { ShareFilesModule } from './share-files/share-files.module';
+import { LoggerMiddleware } from './utils/middleware/logger.middleware';
 
 
 
@@ -21,7 +22,6 @@ ConfigModule.forRoot({
     inject:[ConfigService],
     useFactory: (configService: ConfigService) => {
       const resolvedMongoUri = configService.get<string>('MONGODB_URI');
-      // const resolvedMongoUri = 'mongodb+srv://peerzadahanannaseer:FSKnueO63bi7ONs3@drivecloud.zivw3uz.mongodb.net/?retryWrites=true&w=majority'
       console.log('Resolved MongoDB URI:', resolvedMongoUri);
       return {
         uri: resolvedMongoUri,
@@ -36,6 +36,9 @@ ConfigModule.forRoot({
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
+export class AppModule  {
+  // configure(consumer:MiddlewareConsumer){
+  //   consumer.apply(LoggerMiddleware).forRoutes({path:'*',method:RequestMethod.ALL})
+  // }
   
 }
