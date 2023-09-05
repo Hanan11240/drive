@@ -95,7 +95,7 @@ export class FilesService {
     const { length } = file;
     await this.userModelDto.findByIdAndUpdate(
       { _id: userId },
-      { $pull: { fileIds: fileId }, $inc: { spaceConsumed: -length } },
+      { $pull: { fileIds: {fileId:fileId} }, $inc: { spaceConsumed: -length } },
     );
     return;
   }

@@ -24,6 +24,7 @@
       class="col-12 col-sm-6 col-md-3"
       *ngFor="let file of files$ | async"
       [file]="file"
+      (fileDeleted)="deleteFile($event)"
     ></app-view-files>
   </div>
 </div>

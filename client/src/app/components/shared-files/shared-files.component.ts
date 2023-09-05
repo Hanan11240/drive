@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ViewFilesComponent } from '../view-files/view-files.component';
-import { ViewFoldersComponent } from '../view-folders/view-folders.component';
+import { ViewFoldersComponent } from '../Folder/view-folders.component'; 
 
 @Component({
   selector: 'app-shared-files',

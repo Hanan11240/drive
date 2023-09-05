@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ViewFilesComponent } from '../view-files/view-files.component';
-import { ViewFoldersComponent } from '../view-folders/view-folders.component';
+import { ViewFoldersComponent } from '../Folder/view-folders.component';
 import { SharedFilesComponent } from '../shared-files/shared-files.component';
 import { DashboardService } from './dashboard.service';
-import { FolderModel } from '../view-folders/models/folder';
+import { FolderModel } from '../Folder/models/folder';
 import { Observable, map, of } from 'rxjs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddFolderComponent } from 'src/app/utils/dialog/add-folder/add-folder.component';
@@ -90,6 +90,13 @@ export class DashboardComponent {
             : folder
         );
       })
+    );
+  }
+  deleteFile(fileDetails: FileModel) {
+    this.files$ = this.files$.pipe(
+      map((files: FileModel[]) =>
+        files.filter((file) => file.fileId  !== fileDetails.fileId)
+      )
     );
   }
 }

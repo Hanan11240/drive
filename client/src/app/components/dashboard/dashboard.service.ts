@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { FolderModel } from '../view-folders/models/folder';
+import { FolderModel } from '../Folder/models/folder'; 
 import { Observable, map, shareReplay } from 'rxjs';
 import { FileModel } from '../view-files/models/FileModel';
 
