@@ -17,8 +17,9 @@ export class DashboardService {
  
   constructor(private http: HttpClient) {}
 
-  getFolders(userId: string) {
-    return this.http.get<FolderModel[]>(`${this.serverUrl}folders/parent-folders/${userId}`).pipe(shareReplay());
+  getFolders(userId: string,folderId?:string) {
+    const folderType = folderId ? 'child-folders' : 'parent-folders'
+    return this.http.get<FolderModel[]>(`${this.serverUrl}folders/${folderType}/${userId}`,{params:{folderId:folderId || ''}}).pipe(shareReplay());
   }
 
   addFolder(folderDetails:Omit<FolderModel, '_id'>){

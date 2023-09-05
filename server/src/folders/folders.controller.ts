@@ -1,6 +1,6 @@
 import { Controller, HttpStatus, Post, Res, Body, Delete, Param, Patch, Query, Get } from '@nestjs/common';
 import { FoldersService } from './folders.service';
-import { Response } from 'express';
+import { Response, query } from 'express';
 import { FoldersModel } from './dto/folder..dto';
 
 @Controller('folders')
@@ -37,6 +37,15 @@ export class FoldersController {
     const parentFolders = await this.foldersService.parentFolders(userId);
     res.status(HttpStatus.OK).json(parentFolders)
 
+  }
+
+
+  @Get('child-folders/:userId')
+  async getChildFolders(@Param() params:{userId:string},@Query() query:{folderId:string},@Res() res:Response){
+    const {userId} = params;
+    const {folderId} = query
+    const childFolders = await this.foldersService.childFolders(userId,folderId);
+    res.status(HttpStatus.OK).json(childFolders)
   }
  
 }

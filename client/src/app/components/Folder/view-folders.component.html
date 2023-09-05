@@ -10,7 +10,7 @@
                 <mat-icon>delete_forever</mat-icon>
               <span>Delete</span>
             </button>
-            <button mat-menu-item [routerLink]="['/folder/view-folder']">
+            <button mat-menu-item [routerLink]="['/folder/view-folder']" [queryParams]="{folderId:folder._id}">
                 <mat-icon>visibility</mat-icon>
               <span>View</span>
             </button>

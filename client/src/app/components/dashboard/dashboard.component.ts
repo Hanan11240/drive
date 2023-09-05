@@ -10,6 +10,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddFolderComponent } from 'src/app/utils/dialog/add-folder/add-folder.component';
 import { FileModel } from '../view-files/models/FileModel';
 import { UploadFileComponent } from '../upload-file/upload-file.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -30,15 +31,22 @@ export class DashboardComponent {
   userId!: string;
   files$!: Observable<FileModel[]>;
   images: string[] = [];
-
+  folderId?:string
   constructor(
     private dashboardService: DashboardService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private route:ActivatedRoute
   ) {}
   ngOnInit() {
-    this.userId = localStorage.getItem('userId') as string;
-    this.folders$ = this.dashboardService.getFolders(this.userId);
-    this.files$ = this.dashboardService.getParentFiles(this.userId);
+    this.route.queryParamMap.subscribe({
+        next:(params)=>{
+          this.folderId = params.get('folderId') || undefined
+          this.userId = localStorage.getItem('userId') as string;
+          this.folders$ = this.dashboardService.getFolders(this.userId,this.folderId);
+          this.files$ = this.dashboardService.getParentFiles(this.userId);
+        }
+      })
+  
   }
   addFolderDialog() {
     const dialogRef = this.dialog.open(AddFolderComponent, {
@@ -53,9 +61,10 @@ export class DashboardComponent {
   }
 
   addFolder(folderName: string) {
-    const folderDetails: Omit<FolderModel, '_id'> = {
+    const folderDetails: Omit<FolderModel, '_id'> & {parentFolderId?:string} = {
       userId: this.userId,
       folderName: folderName,
+      parentFolderId:this.folderId 
     };
     this.dashboardService.addFolder(folderDetails).subscribe({
       next: (response: FolderModel) => {

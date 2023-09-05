@@ -48,7 +48,7 @@ export class FoldersService {
           { folderNestLimit: 1, _id: 0 },
         ),
       ]);
-
+    //  check if foler at this level exits (pending)
       if (childNumber >= folderNestLimit)
         throw new HttpException(
           'Cannot nest more folders',
@@ -131,5 +131,10 @@ export class FoldersService {
       { fileIds: 0, childNumber: 0, parentFolderId: 0 },
     );
     return parentFolders;
+  }
+
+  async childFolders(userId:string,folderId:string){
+    const childFolders = await this.folderModelDto.find({parentFolderId:new Types.ObjectId(folderId)});
+    return childFolders
   }
 }
