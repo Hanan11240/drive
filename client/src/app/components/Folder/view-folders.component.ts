@@ -7,10 +7,11 @@ import {MatButtonModule} from '@angular/material/button';
 import { FolderService } from './folder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RenameComponent } from 'src/app/utils/dialog/rename/rename.component';
+import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-view-folders',
   standalone: true,
-  imports: [CommonModule,MatIconModule,MatMenuModule,MatButtonModule],
+  imports: [CommonModule,MatIconModule,MatMenuModule,MatButtonModule,RouterModule],
   templateUrl: './view-folders.component.html',
   styleUrls: ['./view-folders.component.scss']
 })
