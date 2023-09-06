@@ -10,8 +10,8 @@ serverUrl = environment.serverUrl
   constructor(private http:HttpClient) { }
 
 
-  deleteFile(fileDetails:FileModel,userId:string){
+  deleteFile(fileDetails:FileModel,userId:string,folderId?:string){
     const {fileId} = fileDetails
-    return this.http.delete(`${this.serverUrl}files/delete/${fileId}/${userId}`)
+    return this.http.delete(`${this.serverUrl}files/delete/${fileId}/${userId}`,{params:{folderId:folderId || ''}})
   }
 }

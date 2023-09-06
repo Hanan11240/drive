@@ -48,6 +48,12 @@ export class FoldersService {
           { folderNestLimit: 1, _id: 0 },
         ),
       ]);
+      const folderExists = await this.folderModelDto.findOne({parentFolderId:parentFolderId,childNumber:childNumber+1,folderName:folderName})
+      if(folderExists)
+      throw new HttpException(
+        'Folder exists',
+        HttpStatus.BAD_REQUEST,
+      );
     //  check if foler at this level exits (pending)
       if (childNumber >= folderNestLimit)
         throw new HttpException(

@@ -9,8 +9,8 @@ import { FileModel } from '../view-files/models/FileModel';
   providedIn: 'root',
 })
 export class DashboardService {
-  uploadFiles(formData: FormData, userId: string ) {
-    return this.http.post<FileModel[]>(`${this.serverUrl}files/${userId}`,formData)
+  uploadFiles(formData: FormData, userId: string,folderId?:string ) {
+    return this.http.post<FileModel[]>(`${this.serverUrl}files/${userId}`,formData,{params:{folderId:folderId || ''}})
   }
   
   serverUrl = environment.serverUrl;
@@ -26,8 +26,9 @@ export class DashboardService {
    return this.http.post<FolderModel>(`${this.serverUrl}folders`,folderDetails)
   }
 
-  getParentFiles(userId: string) {
-    return this.http.get<FileModel[]>(`${this.serverUrl}files/parent-files/${userId}`).pipe(shareReplay())
+  getParentFiles(userId: string,FolderId?:string) {
+    const fileType = FolderId ? 'child-files' : 'parent-files'
+    return this.http.get<FileModel[]>(`${this.serverUrl}files/${fileType}/${userId}`,{params:{FolderId:FolderId || ''}}).pipe(shareReplay())
   }
   
 }

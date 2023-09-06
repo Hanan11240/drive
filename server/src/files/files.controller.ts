@@ -14,6 +14,7 @@ import {
 import { FilesService } from './files.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { FileResponseVm } from './model/file-response-vm.model';
+import { ObjectId } from 'mongoose';
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
@@ -86,7 +87,9 @@ export class FilesController {
   @Delete('delete/:id/:userId')
   async deleteFile(
     @Param() param: { userId: string; id: string },
+    @Query() query:{folderId:string}
   ): Promise<FileResponseVm> {
+    const {folderId} = query
     const { id, userId } = param;
     const file = await this.filesService.findInfo(id);
     const filestream = await this.filesService.deleteFile(id);
@@ -96,7 +99,7 @@ export class FilesController {
         HttpStatus.EXPECTATION_FAILED,
       );
     }
-    await this.filesService.updateUserConsumedSpace(userId, file, id);
+    await this.filesService.updateUserConsumedSpace(userId, file, id,folderId);
     return {
       message: 'File has been deleted',
       file: file,
@@ -105,9 +108,17 @@ export class FilesController {
   @Get('parent-files/:userId')
   async parentFiles(
     @Param() param: { userId: string },
-  ): Promise<string[]> {
+  ): Promise<{fileId:ObjectId,fileName:string,isParent:boolean}[]> {
     const { userId } = param;
-    const fileIds: string[] = await this.filesService.parentFiles(userId);
+    const fileIds:{fileId:ObjectId,fileName:string,isParent:boolean}[] = await this.filesService.parentFiles(userId);
     return fileIds;
   }
+
+ @Get('child-files/:userId')
+ async childFiles(@Param() param:{userId:string},@Query() query:{FolderId:string}){
+  const {userId} = param
+  const {FolderId} = query
+  const childFiles = await this.filesService.childFiles(userId,FolderId);
+  return childFiles
+ } 
 }

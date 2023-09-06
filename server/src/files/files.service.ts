@@ -42,15 +42,21 @@ export class FilesService {
   }
 
   async userInfoToFile(userId: string, files, folderId: string): Promise<void> {
-
     const fileInfo: {
       totalSize: number;
       fileIds: { fileId: string; isParent: boolean }[] | string;
     } = files.reduce(
       (accumulator, file) => {
         folderId
-          ? accumulator.fileIds.push({fileId:file.id,fileName:file.originalname})
-          : accumulator.fileIds.push({ fileId: file.id, isParent: true,fileName:file.originalname });
+          ? accumulator.fileIds.push({
+              fileId: file.id,
+              fileName: file.originalname,
+            })
+          : accumulator.fileIds.push({
+              fileId: file.id,
+              isParent: true,
+              fileName: file.originalname,
+            });
         accumulator.totalSize += file.size;
         return accumulator;
       },
@@ -91,12 +97,23 @@ export class FilesService {
     userId: string,
     file: FileInfoVm,
     fileId: string,
+    folderId?: string,
   ) {
     const { length } = file;
     await this.userModelDto.findByIdAndUpdate(
       { _id: userId },
-      { $pull: { fileIds: {fileId:fileId} }, $inc: { spaceConsumed: -length } },
+      {
+        $pull: { fileIds: { fileId: fileId } },
+        $inc: { spaceConsumed: -length },
+      },
     );
+    if (folderId)
+      await this.folderModel.findByIdAndUpdate(
+        { _id: folderId },
+        {
+          $pull: { fileIds: { fileId: fileId } },
+        },
+      );
     return;
   }
 
@@ -129,17 +146,25 @@ export class FilesService {
             $filter: {
               input: '$fileIds',
               as: 'file',
-              cond: { $and: [{ $ne: ['$$file.fileId', null] }, '$$file.isParent'] },
+              cond: {
+                $and: [{ $ne: ['$$file.fileId', null] }, '$$file.isParent'],
+              },
             },
           },
         },
       },
     ];
-    
-    
 
     const result = await this.userModelDto.aggregate(pipeline);
     const fileIds = result[0]?.fileIds;
     return fileIds;
+  }
+
+  async childFiles(userId: string, folderId: string) {
+    const childFiles = await this.folderModel.findOne(
+      { _id: folderId },
+      { fileIds: 1, _id: 0 },
+    );
+    return childFiles?.fileIds || [];
   }
 }

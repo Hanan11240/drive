@@ -43,7 +43,7 @@ export class DashboardComponent {
           this.folderId = params.get('folderId') || undefined
           this.userId = localStorage.getItem('userId') as string;
           this.folders$ = this.dashboardService.getFolders(this.userId,this.folderId);
-          this.files$ = this.dashboardService.getParentFiles(this.userId);
+          this.files$ = this.dashboardService.getParentFiles(this.userId,this.folderId);
         }
       })
   
