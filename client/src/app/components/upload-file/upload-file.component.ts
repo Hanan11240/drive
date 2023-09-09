@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DashboardService } from '../dashboard/dashboard.service';
 import { FileModel } from '../view-files/models/FileModel';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-upload-file',
@@ -17,7 +18,8 @@ export class UploadFileComponent {
   @Output() uploadedFiles = new EventEmitter<FileModel[]>();
   constructor(
     private dashboardService: DashboardService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toastr: ToastrService
   ) {
     route.queryParamMap.subscribe;
   }
@@ -40,6 +42,7 @@ export class UploadFileComponent {
       next: (response: FileModel[]) => {
         this.uploaded = true;
         this.uploadedFiles.emit(response);
+        this.toastr.success('File Uploaded!');
       },
     });
   }
