@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FileService } from './service/file.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-view-files',
@@ -32,14 +33,34 @@ export class ViewFilesComponent {
   }
 
   deleteFile(file: FileModel) {
-    this.fileService.deleteFile(file, this.userId, this.folderId).subscribe({
-      next: (response: any) => {
-        this.fileDeleted.emit(file)
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.fileService.deleteFile(file, this.userId, this.folderId).subscribe({
+          next: (response: any) => {
+            this.fileDeleted.emit(file)
+            Swal.fire(
+              'Deleted!',
+              'Your file has been deleted.',
+              'success'
+            )
+          }
+        })
+       
       }
     })
+   
   }
 
   viewFile(file: FileModel) {
+ 
     const { fileId } = file
     this.fileService.viewFile(fileId).subscribe({
       next: (response: HttpResponse<Blob>) => {

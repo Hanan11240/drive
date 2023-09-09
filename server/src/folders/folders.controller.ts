@@ -15,6 +15,7 @@ export class FoldersController {
   const addedFolder =  await this.foldersService.createFolder(folder);
     res.status(HttpStatus.OK).json(addedFolder);
   }
+  
   @Delete(':folderId/:userId')
   async deleteFolder(@Res() res:Response,@Param() param:{folderId:string,userId:string}){
     const {folderId,userId} = param

@@ -8,6 +8,7 @@ import { FolderService } from './folder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RenameComponent } from 'src/app/utils/dialog/rename/rename.component';
 import { RouterModule } from '@angular/router';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-view-folders',
   standalone: true,
@@ -22,15 +23,33 @@ export class ViewFoldersComponent {
 constructor(private folderService:FolderService, public dialog: MatDialog){}
 
 deleteFolder(folderDetails:FolderModel){
-  
-  this.folderService.deleteFolder(folderDetails).subscribe({
-    next:(response:any)=>{
-      this.deletedFolder.emit(folderDetails)
-    },
-    error:(error:any)=>{
-
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.folderService.deleteFolder(folderDetails).subscribe({
+        next:(response:any)=>{
+          this.deletedFolder.emit(folderDetails)
+          Swal.fire(
+            'Deleted!',
+            'Your file has been deleted.',
+            'success'
+          )
+        },
+        error:(error:any)=>{
+    
+        }
+      })
+     
     }
   })
+
 }
 
 renameFolder(folderId:string,folderName:string){

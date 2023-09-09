@@ -13,7 +13,7 @@ export class FoldersModel {
   folderName: string;
   @IsOptional()
   @IsArray()
-  fileIds: ObjectId[];
+  fileIds: {fileId:ObjectId,_id:ObjectId,fileName:string}[];
   @IsString()
   @IsOptional()
   parentFolderId: ObjectId;

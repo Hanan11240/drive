@@ -11,7 +11,7 @@ export class FoldersService {
     @InjectModel('folders') private folderModelDto: Model<FoldersModel>,
     @InjectModel('users') private userModelDto: Model<UserDTO>,
     private readonly filesService: FilesService,
-  ) {}
+  ) { }
 
   async createFolder(folder: Partial<FoldersModel> & { userId: string }) {
     const { userId, parentFolderId, folderName, childNumber } = folder;
@@ -48,13 +48,13 @@ export class FoldersService {
           { folderNestLimit: 1, _id: 0 },
         ),
       ]);
-      const folderExists = await this.folderModelDto.findOne({parentFolderId:parentFolderId,childNumber:childNumber+1,folderName:folderName})
-      if(folderExists)
-      throw new HttpException(
-        'Folder exists',
-        HttpStatus.BAD_REQUEST,
-      );
-    //  check if foler at this level exits (pending)
+      const folderExists = await this.folderModelDto.findOne({ parentFolderId: parentFolderId, childNumber: childNumber + 1, folderName: folderName })
+      if (folderExists)
+        throw new HttpException(
+          'Folder exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      //  check if foler at this level exits (pending)
       if (childNumber >= folderNestLimit)
         throw new HttpException(
           'Cannot nest more folders',
@@ -93,16 +93,15 @@ export class FoldersService {
       { _id: folderId },
       { fileIds: 1, _id: 0 },
     );
-
     const { fileIds: ids } = fileIds;
-    for (const id of ids) {
-      const idAsString = (id as ObjectId).toString();
-      const fileInfo = await this.filesService.findInfo(idAsString);
-      await this.filesService.deleteFile(idAsString);
+    const fileIdStrings = ids.map(file => file.fileId.toString());
+    for (const id of fileIdStrings) {
+      const fileInfo = await this.filesService.findInfo(id);
+      await this.filesService.deleteFile(id);
       await this.filesService.updateUserConsumedSpace(
         userId,
         fileInfo,
-        idAsString,
+        id,
       );
     }
   }
@@ -139,8 +138,8 @@ export class FoldersService {
     return parentFolders;
   }
 
-  async childFolders(userId:string,folderId:string){
-    const childFolders = await this.folderModelDto.find({parentFolderId:new Types.ObjectId(folderId)});
+  async childFolders(userId: string, folderId: string) {
+    const childFolders = await this.folderModelDto.find({ parentFolderId: new Types.ObjectId(folderId) });
     return childFolders
   }
 }
