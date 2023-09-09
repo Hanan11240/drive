@@ -10,6 +10,7 @@ import {
   Res,
   UploadedFiles,
   UseInterceptors,
+  StreamableFile
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -57,7 +58,7 @@ export class FilesController {
   }
 
   @Get(':id')
-  async getFile(@Param('id') id: string, @Res() res) {
+  async getFile(@Param('id') id: string,  @Res({ passthrough: true }) res): Promise<StreamableFile>  {
     const file = await this.filesService.findInfo(id);
     const filestream = await this.filesService.readStream(id);
     if (!filestream) {
@@ -67,11 +68,11 @@ export class FilesController {
       );
     }
     res.header('Content-Type', file.contentType);
-    return filestream.pipe(res);
+    return new StreamableFile(filestream);  
   }
 
   @Get('download/:id')
-  async downloadFile(@Param('id') id: string, @Res() res) {
+  async downloadFile(@Param('id') id: string, @Res({passthrough:true}) res) {
     const file = await this.filesService.findInfo(id);
     const filestream = await this.filesService.readStream(id);
     if (!filestream) {
@@ -82,7 +83,7 @@ export class FilesController {
     }
     res.header('Content-Type', file.contentType);
     res.header('Content-Disposition', 'attachment; filename=' + file.filename);
-    return filestream.pipe(res);
+    return new StreamableFile(filestream);  
   }
   @Delete('delete/:id/:userId')
   async deleteFile(

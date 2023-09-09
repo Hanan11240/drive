@@ -9,11 +9,11 @@
                 <mat-icon>delete_forever</mat-icon>
               <span>Delete</span>
             </button>
-            <button mat-menu-item>
+            <button mat-menu-item (click)="viewFile(file)">
                 <mat-icon>visibility</mat-icon>
               <span>View</span>
             </button>
-            <button mat-menu-item>
+            <button mat-menu-item (click)="downloadFile(file)">
                 <mat-icon>download</mat-icon>
               <span>Download</span>
             </button>
