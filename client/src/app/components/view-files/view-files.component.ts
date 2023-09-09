@@ -5,7 +5,7 @@ import { FileModel } from './models/FileModel';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { FileService } from './service/file.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 
 @Component({
@@ -25,7 +25,7 @@ export class ViewFilesComponent {
   ngOnInit() {
     this.userId = localStorage.getItem('userId') || ''
     this.route.queryParamMap.subscribe({
-      next: (params: any) => {
+      next: (params: ParamMap) => {
         this.folderId = params.get('folderId') || ''
       }
     })
@@ -43,29 +43,7 @@ export class ViewFilesComponent {
     const { fileId } = file
     this.fileService.viewFile(fileId).subscribe({
       next: (response: HttpResponse<Blob>) => {
-        const contentDisposition = response.headers.get('content-disposition');
-        const filename = contentDisposition
-          ? contentDisposition.split('filename=')[1].trim()
-          : 'file'; // Default filename if not provided
-
-        const contentType = response.headers.get('content-type');
-        const responseBody = response.body;
-
-        if (responseBody !== null && contentType !== null) {
-          const blob = new Blob([responseBody], { type: contentType });
-
-          // Create a blob URL and open it in a new tab
-          const blobUrl = window.URL.createObjectURL(blob);
-          window.open(blobUrl, '_blank');
-
-          // Clean up the blob URL when the tab is closed
-          window.addEventListener('beforeunload', () => {
-            window.URL.revokeObjectURL(blobUrl);
-          });
-        } else {
-          // Handle the case where either the response body or content type is null
-          console.error('Response body or content type is null');
-        }
+        this.fileService.previewOrDownloadFile(response, 'preview')
       }
     })
   }
@@ -75,27 +53,7 @@ export class ViewFilesComponent {
     const { fileId } = file;
     this.fileService.downloadFile(fileId).subscribe({
       next: (response: HttpResponse<Blob>) => {
-        const contentDisposition = response.headers.get('content-disposition');
-        const filename = contentDisposition
-          ? contentDisposition.split('filename=')[1].trim()
-          : 'file'; // Default filename if not provided
-  
-        const contentType = response.headers.get('content-type');
-        const responseBody = response.body;
-        if (responseBody !== null && contentType !== null) {
-          const blob = new Blob([responseBody], { type: contentType });
-  
-          // Create a temporary link element to trigger the download
-          const link = document.createElement('a');
-          link.href = window.URL.createObjectURL(blob);
-          link.download = filename;
-  
-          // Trigger the download
-          link.click();
-  
-          // Clean up
-          window.URL.revokeObjectURL(link.href);
-        }
+        this.fileService.previewOrDownloadFile(response, 'download')
       },
       error: (error) => {
         console.error('Error downloading file:', error);
@@ -103,5 +61,5 @@ export class ViewFilesComponent {
       },
     });
   }
-  
+
 }
