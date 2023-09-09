@@ -9,6 +9,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { RenameComponent } from 'src/app/utils/dialog/rename/rename.component';
 import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { SharedFilesService } from '../shared-files/shared-file.service';
 @Component({
   selector: 'app-view-folders',
   standalone: true,
@@ -20,7 +22,10 @@ export class ViewFoldersComponent {
 @Input() folder!:FolderModel
 @Output() deletedFolder = new EventEmitter<FolderModel>();
 @Output() renamedFolder = new EventEmitter<{folderId:string,folderName:string}>();
-constructor(private folderService:FolderService, public dialog: MatDialog){}
+isShared!:Observable<BehaviorSubject<boolean>>
+constructor(private folderService:FolderService, public dialog: MatDialog,private sharedFiles:SharedFilesService){
+  this.isShared = this.sharedFiles.isShared()
+}
 
 deleteFolder(folderDetails:FolderModel){
   Swal.fire({
