@@ -89,4 +89,12 @@ rename(folderDetails:FolderModel) {
     }
   });
 }
+shareFolder(folder:FolderModel){
+    const {_id } = folder
+    this.sharedFiles.shareFilesOrFolder(_id,undefined).subscribe({
+      next:(response:any)=>{
+
+      }
+    })
+}
 }
