@@ -6,19 +6,19 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu" >
-            <button (click)="deleteFolder(folder)" mat-menu-item>
+            <button (click)="deleteFolder(folder)" mat-menu-item *ngIf="!isShared && !shared">
                 <mat-icon>delete_forever</mat-icon>
               <span>Delete</span>
             </button>
-            <button mat-menu-item [routerLink]="['/folder/view-folder']" [queryParams]="{folderId:folder._id}">
+            <button mat-menu-item [routerLink]="['/folder/view-folder']" [queryParams]="{folderId: folder._id,shared: (isShared || shared )}" queryparamshandling="preserve">
                 <mat-icon>visibility</mat-icon>
               <span>View</span>
             </button>
-            <button (click)="rename(folder)" mat-menu-item>
+            <button (click)="rename(folder)" mat-menu-item *ngIf="!isShared && !shared">
                 <mat-icon>create</mat-icon>
               <span>Rename</span>
             </button>
-            <button mat-menu-item>
+            <button mat-menu-item *ngIf="!isShared && !shared">
                 <mat-icon>share</mat-icon>
                 <span>Share</span>
               </button>

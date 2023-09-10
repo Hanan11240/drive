@@ -12,7 +12,7 @@ export class ShareFilesService {
   constructor(@InjectModel('sharefiles') private shareFilesModel: Model<ShareFilesDto>, @InjectModel('users') private userModelDto: Model<UserDTO>) { }
 
   async shareFiles(shareFilesInfo: ShareFilesDto) {
-    const { sharedWith, fileId, folderId } = shareFilesInfo;
+    const { sharedWith, file, folderId } = shareFilesInfo;
     const allUserExists = await this.userModelDto.find({ email: { $in: sharedWith } })
     if (!allUserExists.length)
       throw new HttpException('Some Users not found', HttpStatus.BAD_REQUEST)
@@ -21,8 +21,8 @@ export class ShareFilesService {
       $or: []
     };
 
-    if (fileId) {
-      query.$or.push({ fileId: fileId });
+    if (file && file.fileId) {
+      query.$or.push({ 'file.fileId': file.fileId });
     }
 
     if (folderId) {
@@ -36,7 +36,27 @@ export class ShareFilesService {
   }
 
   async filesSharedWithMe(userId: string) {
-
+    const userExists = await this.userModelDto.findOne({ _id: new Types.ObjectId(userId) })
+    if (!userExists)
+      throw new HttpException('No user found', HttpStatus.BAD_REQUEST)
+    const sharedFiles = await this.shareFilesModel.aggregate([
+      {
+        $match: {
+          sharedWith: userExists.email
+        }
+      },
+      {
+        $unwind: "$file"
+      },
+      {
+        $project: {
+          fileName: "$file.fileName",
+          fileId: "$file.fileId",
+          _id: 0 // Exclude the _id field from the output
+        }
+      }
+    ])
+    return sharedFiles
   }
 
   async foldersSharedWithMe(userId: string, folderId: string) {
@@ -72,7 +92,7 @@ export class ShareFilesService {
       {
         $project: {
           // Project the desired fields from the "folder" subdocument
-          folderId: "$folder._id",
+          _id: "$folder._id",
           folderName: "$folder.folderName",
 
         },

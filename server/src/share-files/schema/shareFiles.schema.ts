@@ -7,6 +7,9 @@ export const  ShareFilesSchema= new mongoose.Schema({
         hasExpiry:{type:Boolean,default:false},
         expiryDate:Number,
         folderId:mongoose.Schema.Types.ObjectId,
-        fileId:mongoose.Schema.Types.ObjectId
+        file:{
+                fileName:String,
+                fileId:mongoose.Schema.Types.ObjectId
+        }
 
 })

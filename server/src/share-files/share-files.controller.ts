@@ -19,7 +19,6 @@ export class ShareFilesController {
   async filesSharedWithMe(@Param() param: { userId: string }, @Res() res: Response, @Query() query: { folderId: string }, @Param() params: { userId: string }): Promise<void> {
     const { userId } = params
     const sharedFiles = await this.shareFilesService.filesSharedWithMe(userId)
-
     res.status(HttpStatus.OK).json(sharedFiles)
   }
 

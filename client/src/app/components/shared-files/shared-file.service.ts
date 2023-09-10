@@ -14,10 +14,6 @@ export class SharedFilesService{
     serverUrl = environment.serverUrl
     isShared$ = new  BehaviorSubject<boolean>(false)
     constructor(private http:HttpClient){}
-
-    isShared():Observable<BehaviorSubject<boolean>>{
-        return of(this.isShared$)
-    }
     getSharedFiles(userId:string,folderId?:string){ 
         return this.http.get<FileModel[]>(`${this.serverUrl}share-files/files/${userId}`,{params:{folderId:folderId || ''}})
     }

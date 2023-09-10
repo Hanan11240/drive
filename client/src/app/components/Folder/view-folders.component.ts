@@ -7,7 +7,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { FolderService } from './folder.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RenameComponent } from 'src/app/utils/dialog/rename/rename.component';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, ParamMap, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SharedFilesService } from '../shared-files/shared-file.service';
@@ -22,9 +22,19 @@ export class ViewFoldersComponent {
 @Input() folder!:FolderModel
 @Output() deletedFolder = new EventEmitter<FolderModel>();
 @Output() renamedFolder = new EventEmitter<{folderId:string,folderName:string}>();
-isShared!:Observable<BehaviorSubject<boolean>>
-constructor(private folderService:FolderService, public dialog: MatDialog,private sharedFiles:SharedFilesService){
-  this.isShared = this.sharedFiles.isShared()
+isShared!:boolean
+shared?:boolean
+constructor(private folderService:FolderService, public dialog: MatDialog,private sharedFiles:SharedFilesService,private route:ActivatedRoute){
+this.sharedFiles.isShared$.subscribe({
+  next:(value:boolean)=>{
+    this.isShared = value
+  }
+})
+this.route.queryParamMap.subscribe({
+  next:(params:ParamMap)=>{
+    this.shared = !!params.get('shared') || undefined
+  }
+})
 }
 
 deleteFolder(folderDetails:FolderModel){

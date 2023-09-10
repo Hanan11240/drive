@@ -8,6 +8,8 @@ import { FileService } from './service/file.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import Swal from 'sweetalert2'
+import { BehaviorSubject, Observable } from 'rxjs';
+import { SharedFilesService } from '../shared-files/shared-file.service';
 
 @Component({
   selector: 'app-view-files',
@@ -21,9 +23,15 @@ export class ViewFilesComponent {
   @Output() fileDeleted = new EventEmitter<FileModel>()
   userId!: string
   folderId!: string
-  constructor(private fileService: FileService, private route: ActivatedRoute) { }
+  isShared!:boolean
+  constructor(private fileService: FileService, private route: ActivatedRoute,private sharedFiles:SharedFilesService) { }
 
   ngOnInit() {
+    this.sharedFiles.isShared$.subscribe((value: boolean) => {
+      console.log(value)
+      this.isShared = value;
+    });
+    console.log(this.isShared)
     this.userId = localStorage.getItem('userId') || ''
     this.route.queryParamMap.subscribe({
       next: (params: ParamMap) => {

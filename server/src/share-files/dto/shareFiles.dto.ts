@@ -14,5 +14,5 @@ export class ShareFilesDto{
     @IsOptional()
     folderId:string;
     @IsOptional()
-    fileId:string
+    file:{fileId:string,fileName:string}
 }

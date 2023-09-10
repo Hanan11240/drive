@@ -5,7 +5,7 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="deleteFile(file)">
+            <button mat-menu-item (click)="deleteFile(file)" *ngIf="!isShared">
                 <mat-icon>delete_forever</mat-icon>
               <span>Delete</span>
             </button>
@@ -17,7 +17,7 @@
                 <mat-icon>download</mat-icon>
               <span>Download</span>
             </button>
-            <button mat-menu-item>
+            <button mat-menu-item *ngIf="!isShared">
                 <mat-icon>share</mat-icon>
                 <span>Share</span>
               </button>

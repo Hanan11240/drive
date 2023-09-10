@@ -10,7 +10,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddFolderComponent } from 'src/app/utils/dialog/add-folder/add-folder.component';
 import { FileModel } from '../view-files/models/FileModel';
 import { UploadFileComponent } from '../upload-file/upload-file.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,6 +32,7 @@ export class DashboardComponent {
   files$!: Observable<FileModel[]>;
   images: string[] = [];
   folderId?:string
+  shared?:string
   constructor(
     private dashboardService: DashboardService,
     public dialog: MatDialog,
@@ -39,9 +40,10 @@ export class DashboardComponent {
   ) {}
   ngOnInit() {
     this.route.queryParamMap.subscribe({
-        next:(params)=>{
+        next:(params:ParamMap)=>{
           this.folderId = params.get('folderId') || undefined
           this.userId = localStorage.getItem('userId') as string;
+          this.shared = params.get('shared') || undefined
           this.folders$ = this.dashboardService.getFolders(this.userId,this.folderId);
           this.files$ = this.dashboardService.getParentFiles(this.userId,this.folderId);
         }
