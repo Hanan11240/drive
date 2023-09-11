@@ -17,7 +17,7 @@
                 <mat-icon>download</mat-icon>
               <span>Download</span>
             </button>
-            <button mat-menu-item *ngIf="!isShared">
+            <button mat-menu-item *ngIf="!isShared" (click)="shareFiles(file)">
                 <mat-icon>share</mat-icon>
                 <span>Share</span>
               </button>

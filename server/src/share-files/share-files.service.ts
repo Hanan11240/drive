@@ -100,4 +100,11 @@ export class ShareFilesService {
     ])
     return sharedFolders
   }
+
+async fetchUsers(searchText?:string){
+  const escapedSearchText = searchText ? searchText.replace(/\\/g, ''):'';
+  const query =  searchText?{email:{$regex:escapedSearchText,$options:'i'}} : {}
+  const users = await this.userModelDto.find(query,{email:1,_id:0}).limit(10) 
+  return users
+}
 }

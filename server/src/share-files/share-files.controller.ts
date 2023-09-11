@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpStatus, Param, Post, Query, Res } from '@nestjs/common';
 import { ShareFilesService } from './share-files.service';
 import { ShareFilesDto } from './dto/shareFiles.dto';
-import { Response } from 'express'
+import { Response, query } from 'express'
 
 @Controller('share-files')
 export class ShareFilesController {
@@ -29,5 +29,13 @@ export class ShareFilesController {
     const sharedFolders = await this.shareFilesService.foldersSharedWithMe(userId, folderId)
 
     res.status(HttpStatus.OK).json(sharedFolders)
+  }
+
+
+  @Get('users')
+  async fetchUsers(@Res() res:Response,@Query() query:{searchText:string}){
+    const {searchText} = query
+    const users= await this.shareFilesService.fetchUsers(searchText)
+    res.status(200).json(users)
   }
 }

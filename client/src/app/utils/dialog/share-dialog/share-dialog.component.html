@@ -1,0 +1,27 @@
+<mat-card-header class="p-2">
+  <mat-card-title class="p-2 ps-4 d-flex justify-content-between align-items-center"
+    ><span>Share {{folderName ? 'Folder' : 'File'}} {{ folderName || fileName }}</span
+    ><span class="pe-3 cursor"  (click)="closeDialog()" > <mat-icon>clear</mat-icon ></span></mat-card-title
+  >
+
+</mat-card-header>
+
+<mat-card-content class="p-2">
+    <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="col-11">
+        <mat-label>Share</mat-label>
+        <input matInput placeholder="Add people" formControlName="shareWith">
+    </mat-form-field>
+</form>
+    <div class="p-4 fw-bold">Shared with</div>
+    <div class="shared">
+        <div *ngFor="let shared of allUsers$  | async ">
+            <div class="d-flex justify-content-between align-items-center p-3"><span>peerzadahanannaseer@gmail.com</span><span class="cursor" (click)="removeUsed(shared)"><mat-icon>cancel</mat-icon></span></div>
+        </div>
+    </div>
+   
+</mat-card-content>
+<div align="end" class="me-2">
+    <button mat-raised-button  class="me-2" (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button color="primary">Share</button>
+</div>

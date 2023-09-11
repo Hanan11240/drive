@@ -11,6 +11,7 @@ import { ActivatedRoute, ParamMap, RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SharedFilesService } from '../shared-files/shared-file.service';
+import { ShareDialogComponent } from 'src/app/utils/dialog/share-dialog/share-dialog.component';
 @Component({
   selector: 'app-view-folders',
   standalone: true,
@@ -90,11 +91,18 @@ rename(folderDetails:FolderModel) {
   });
 }
 shareFolder(folder:FolderModel){
-    const {_id } = folder
-    this.sharedFiles.shareFilesOrFolder(_id,undefined).subscribe({
-      next:(response:any)=>{
 
-      }
-    })
+  const dialogRef = this.dialog.open(ShareDialogComponent,{
+    width:'500px',
+    height:'500px',
+    data:folder,
+    disableClose:true
+  })
+    // const {_id } = folder
+    // this.sharedFiles.shareFilesOrFolder(_id,undefined).subscribe({
+    //   next:(response:any)=>{
+
+    //   }
+    // })
 }
 }
