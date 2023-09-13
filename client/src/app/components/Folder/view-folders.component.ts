@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
-import { FolderModel } from './models/folder';
+import { FolderModel, ShareFolderModel } from './models/folder';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import { FolderService } from './folder.service';
@@ -98,11 +98,22 @@ shareFolder(folder:FolderModel){
     data:folder,
     disableClose:true
   })
-    // const {_id } = folder
-    // this.sharedFiles.shareFilesOrFolder(_id,undefined).subscribe({
-    //   next:(response:any)=>{
+  dialogRef.afterClosed().subscribe({
+    next:(data:{ data:{shareWith: string[] }| null} )=>{
+      if(data.data !== null){
+        const shareFolderModel:ShareFolderModel= {sharedWith:data?.data?.shareWith,folderId:folder._id,ownerId:localStorage.getItem('userId') || ''}
+        this.share(shareFolderModel)
+      }
+    
+    }
+  })
+}
 
-    //   }
-    // })
+share(shareFolder:ShareFolderModel){
+this.folderService.shareFolder(shareFolder).subscribe({
+  next:(response:any)=>{
+
+  }
+})
 }
 }

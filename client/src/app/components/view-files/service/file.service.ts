@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FileModel } from '../models/FileModel';
+import { FileModel, ShareFileModel } from '../models/FileModel';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
@@ -60,5 +60,8 @@ export class FileService {
       // Handle the case where either the response body or content type is null
       console.error('Response body or content type is null');
     }
+  }
+  shareFile(shareFile:ShareFileModel){
+    return this.http.post(`${this.serverUrl}share-files`,shareFile)
   }
 }

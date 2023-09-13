@@ -9,19 +9,15 @@
 <mat-card-content class="p-2">
     <form [formGroup]="form">
     <mat-form-field appearance="outline" class="col-11">
-        <mat-label>Share</mat-label>
-        <input matInput placeholder="Add people" formControlName="shareWith">
+       <mat-label>Share with People</mat-label>
+      <mat-select formControlName="shareWith" multiple>
+        <mat-option *ngFor="let people of allUsers$ | async" [value]="people.email">{{people.email}}</mat-option>
+      </mat-select>
     </mat-form-field>
 </form>
-    <div class="p-4 fw-bold">Shared with</div>
-    <div class="shared">
-        <div *ngFor="let shared of allUsers$  | async ">
-            <div class="d-flex justify-content-between align-items-center p-3"><span>peerzadahanannaseer@gmail.com</span><span class="cursor" (click)="removeUsed(shared)"><mat-icon>cancel</mat-icon></span></div>
-        </div>
-    </div>
    
 </mat-card-content>
 <div align="end" class="me-2">
     <button mat-raised-button  class="me-2" (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button color="primary">Share</button>
+    <button mat-raised-button color="primary" (click)="sharedEmails()">Share</button>
 </div>

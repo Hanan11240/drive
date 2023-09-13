@@ -31,6 +31,7 @@ export class ShareFilesService {
     const fileOrFolderShared = await this.shareFilesModel.find(query)
     if (fileOrFolderShared.length)
       throw new HttpException('File or folder alreary shared with some of the users user', HttpStatus.BAD_REQUEST)
+    await this.shareFilesModel.findOneAndUpdate({})
     new this.shareFilesModel(shareFilesInfo).save()
     return
   }

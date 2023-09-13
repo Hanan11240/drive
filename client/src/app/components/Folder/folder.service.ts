@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FolderModel } from './models/folder';
+import { FolderModel, ShareFolderModel } from './models/folder';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 @Injectable({
@@ -18,4 +18,7 @@ export class FolderService {
    const newName = {folderName:folderName} 
     return this.http.patch(`${this.serverUrl}folders/rename/${folderId}`,newName)
   } 
+  shareFolder(shareFolder:ShareFolderModel){
+    return this.http.post(`${this.serverUrl}share-files`,shareFolder)
+  }
 }

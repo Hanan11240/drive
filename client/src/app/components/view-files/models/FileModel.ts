@@ -3,3 +3,9 @@ export type FileModel={
     fileName:string,
     isParent?:boolean
 }
+
+export type ShareFileModel={
+   file:{fileId:string,fileName:string}
+    ownerId:string,
+    sharedWith:string[]
+}

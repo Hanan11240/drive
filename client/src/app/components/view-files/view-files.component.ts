@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { FileModel } from './models/FileModel';
+import { FileModel, ShareFileModel } from './models/FileModel';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { FileService } from './service/file.service';
@@ -92,6 +92,9 @@ export class ViewFilesComponent {
       },
     });
   }
+
+
+
   shareFiles(file:FileModel){
 
     const dialogRef = this.dialog.open(ShareDialogComponent,{
@@ -100,12 +103,24 @@ export class ViewFilesComponent {
       data:file,
       disableClose:true
     })
-      // const {_id } = folder
-      // this.sharedFiles.shareFilesOrFolder(_id,undefined).subscribe({
-      //   next:(response:any)=>{
+    dialogRef.afterClosed().subscribe({
+      next:(data:{ data:{shareWith: string[] }| null} )=>{
+
+        if(data.data !== null){
+          const shareFolderModel:ShareFileModel= {sharedWith:data?.data?.shareWith,file:{fileId:file.fileId,fileName:file.fileName},ownerId:localStorage.getItem('userId') || ''}
+          this.share(shareFolderModel)
+        }
+      
+      }
+    })
+  }
   
-      //   }
-      // })
+  share(shareFile:ShareFileModel){
+  this.fileService.shareFile(shareFile).subscribe({
+    next:(response:any)=>{
+  
+    }
+  })
   }
 
 }

@@ -9,7 +9,7 @@ export class SharedService {
     serverUrl = environment.serverUrl
     constructor(private http:HttpClient){}
 
-    fetchUsers(searchText:string){
-       return this.http.get<{email:string}[]>(`${this.serverUrl}share-files/users`,{params:{searchText}})
+    fetchUsers(searchText?:string){
+       return this.http.get<{email:string}[]>(`${this.serverUrl}share-files/users`,{params:{searchText:searchText || ''}})
     }
 }
