@@ -6,19 +6,21 @@ import { UserDTO } from 'src/auth/dto/user.dto';
 
 @Injectable()
 export class ShareFilesService {
-
-
-
-  constructor(@InjectModel('sharefiles') private shareFilesModel: Model<ShareFilesDto>, @InjectModel('users') private userModelDto: Model<UserDTO>) { }
+  constructor(
+    @InjectModel('sharefiles') private shareFilesModel: Model<ShareFilesDto>,
+    @InjectModel('users') private userModelDto: Model<UserDTO>,
+  ) {}
 
   async shareFiles(shareFilesInfo: ShareFilesDto) {
     const { sharedWith, file, folderId } = shareFilesInfo;
-    const allUserExists = await this.userModelDto.find({ email: { $in: sharedWith } })
+    const allUserExists = await this.userModelDto.find({
+      email: { $in: sharedWith },
+    });
     if (!allUserExists.length)
-      throw new HttpException('Some Users not found', HttpStatus.BAD_REQUEST)
+      throw new HttpException('Some Users not found', HttpStatus.BAD_REQUEST);
     const query = {
       sharedWith: { $in: sharedWith },
-      $or: []
+      $or: [],
     };
 
     if (file && file.fileId) {
@@ -28,42 +30,64 @@ export class ShareFilesService {
     if (folderId) {
       query.$or.push({ folderId: folderId });
     }
-    const fileOrFolderShared = await this.shareFilesModel.find(query)
+    const fileOrFolderShared = await this.shareFilesModel.find(query);
     if (fileOrFolderShared.length)
-      throw new HttpException('File or folder alreary shared with some of the users user', HttpStatus.BAD_REQUEST)
-    await this.shareFilesModel.findOneAndUpdate({})
-    new this.shareFilesModel(shareFilesInfo).save()
-    return
+      throw new HttpException(
+        'File or folder alreary shared with some of the users user',
+        HttpStatus.BAD_REQUEST,
+      );
+    const saveQuery =
+      file && file.fileId
+        ? { 'file.fileId': file.fileId }
+        : { folderId: folderId };
+    await this.shareFilesModel.findOneAndUpdate(
+      saveQuery,
+      {
+        $set: {
+          folderId: folderId || null,
+          file: file || null,
+          ownerId: shareFilesInfo.ownerId,
+        },
+        $push: { sharedWith: shareFilesInfo.sharedWith },
+      },
+      { upsert: true },
+    );
+    // new this.shareFilesModel(shareFilesInfo).save()
+    return;
   }
 
   async filesSharedWithMe(userId: string) {
-    const userExists = await this.userModelDto.findOne({ _id: new Types.ObjectId(userId) })
+    const userExists = await this.userModelDto.findOne({
+      _id: new Types.ObjectId(userId),
+    });
     if (!userExists)
-      throw new HttpException('No user found', HttpStatus.BAD_REQUEST)
+      throw new HttpException('No user found', HttpStatus.BAD_REQUEST);
     const sharedFiles = await this.shareFilesModel.aggregate([
       {
         $match: {
-          sharedWith: userExists.email
-        }
+          sharedWith: userExists.email,
+        },
       },
       {
-        $unwind: "$file"
+        $unwind: '$file',
       },
       {
         $project: {
-          fileName: "$file.fileName",
-          fileId: "$file.fileId",
-          _id: 0 // Exclude the _id field from the output
-        }
-      }
-    ])
-    return sharedFiles
+          fileName: '$file.fileName',
+          fileId: '$file.fileId',
+          _id: 0, // Exclude the _id field from the output
+        },
+      },
+    ]);
+    return sharedFiles;
   }
 
   async foldersSharedWithMe(userId: string, folderId: string) {
-    const userExists = await this.userModelDto.findOne({ _id: new Types.ObjectId(userId) })
+    const userExists = await this.userModelDto.findOne({
+      _id: new Types.ObjectId(userId),
+    });
     if (!userExists)
-      throw new HttpException('No user found', HttpStatus.BAD_REQUEST)
+      throw new HttpException('No user found', HttpStatus.BAD_REQUEST);
     const sharedFolders = await this.shareFilesModel.aggregate([
       {
         $match: {
@@ -76,36 +100,39 @@ export class ShareFilesService {
           hasExpiry: 1,
           folderId: 1,
           fileId: 1,
-          _id: 0
+          _id: 0,
         },
       },
       {
         $lookup: {
-          from: "folders", // The name of the Folders collection
-          localField: "folderId",
-          foreignField: "_id",
-          as: "folder",
+          from: 'folders', // The name of the Folders collection
+          localField: 'folderId',
+          foreignField: '_id',
+          as: 'folder',
         },
       },
       {
-        $unwind: "$folder", // Unwind the folder array created by $lookup
+        $unwind: '$folder', // Unwind the folder array created by $lookup
       },
       {
         $project: {
           // Project the desired fields from the "folder" subdocument
-          _id: "$folder._id",
-          folderName: "$folder.folderName",
-
+          _id: '$folder._id',
+          folderName: '$folder.folderName',
         },
       },
-    ])
-    return sharedFolders
+    ]);
+    return sharedFolders;
   }
 
-async fetchUsers(searchText?:string){
-  const escapedSearchText = searchText ? searchText.replace(/\\/g, ''):'';
-  const query =  searchText?{email:{$regex:escapedSearchText,$options:'i'}} : {}
-  const users = await this.userModelDto.find(query,{email:1,_id:0}).limit(10) 
-  return users
-}
+  async fetchUsers(searchText?: string) {
+    const escapedSearchText = searchText ? searchText.replace(/\\/g, '') : '';
+    const query = searchText
+      ? { email: { $regex: escapedSearchText, $options: 'i' } }
+      : {};
+    const users = await this.userModelDto
+      .find(query, { email: 1, _id: 0 })
+      .limit(10);
+    return users;
+  }
 }
