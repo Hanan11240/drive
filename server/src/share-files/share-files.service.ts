@@ -3,15 +3,18 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { ShareFilesDto } from './dto/shareFiles.dto';
 import { UserDTO } from 'src/auth/dto/user.dto';
+import { copyFileSync } from 'fs';
+import { MailService } from 'src/utils/mail/mail.service';
 
 @Injectable()
 export class ShareFilesService {
   constructor(
     @InjectModel('sharefiles') private shareFilesModel: Model<ShareFilesDto>,
     @InjectModel('users') private userModelDto: Model<UserDTO>,
+    private mailService: MailService,
   ) {}
 
-  async shareFiles(shareFilesInfo: ShareFilesDto) {
+  async shareFiles(shareFilesInfo: ShareFilesDto, origin: string) {
     const { sharedWith, file, folderId } = shareFilesInfo;
     const allUserExists = await this.userModelDto.find({
       email: { $in: sharedWith },
@@ -52,7 +55,16 @@ export class ShareFilesService {
       },
       { upsert: true },
     );
-    // new this.shareFilesModel(shareFilesInfo).save()
+    const url = `${origin}/shared-file-with-me?${
+      folderId ? 'folderId' : 'fileId'
+    }=${folderId || file.fileId}`;
+    console.log(url);
+    this.mailService.sendMail(
+      shareFilesInfo.sharedWith,
+      'Share File',
+      './shareLink',
+      { url: url },
+    );
     return;
   }
 
@@ -122,6 +134,7 @@ export class ShareFilesService {
         },
       },
     ]);
+    console.log(sharedFolders);
     return sharedFolders;
   }
 
@@ -135,4 +148,6 @@ export class ShareFilesService {
       .limit(10);
     return users;
   }
+
+
 }

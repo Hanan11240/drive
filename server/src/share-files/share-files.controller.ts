@@ -1,7 +1,7 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Query, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Query, Req, Res } from '@nestjs/common';
 import { ShareFilesService } from './share-files.service';
 import { ShareFilesDto } from './dto/shareFiles.dto';
-import { Response, query } from 'express'
+import { Response,Request } from 'express'
 
 @Controller('share-files')
 export class ShareFilesController {
@@ -10,8 +10,9 @@ export class ShareFilesController {
 
 
   @Post()
-  async shareFilesWithUser(@Body() body: ShareFilesDto, @Res() res: Response): Promise<void> {
-    await this.shareFilesService.shareFiles(body)
+  async shareFilesWithUser(@Body() body: ShareFilesDto, @Res() res: Response,@Req() req: Request): Promise<void> {
+    const origin = req.get('origin');
+    await this.shareFilesService.shareFiles(body,origin)
     res.status(HttpStatus.OK).json({ message: 'success' })
   }
 

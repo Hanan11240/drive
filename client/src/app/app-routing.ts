@@ -26,6 +26,10 @@ export const APP_ROUTE: Routes = [
     path:'folder',
     loadChildren:()=> import('./components/Folder/folder.route').then(app=>app.Folder_ROUTE)
   },
+  {
+    path:'shared-file-with-me',
+    loadComponent:()=>import('./components/shared-file-with-me/shared-file-with-me.component').then(app=>app.SharedFileWithMeComponent)
+  },
 
   {
     path: '**',
