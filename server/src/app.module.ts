@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { FoldersModule } from './folders/folders.module';
 import { ShareFilesModule } from './share-files/share-files.module';
 import { LoggerMiddleware } from './utils/middleware/logger.middleware';
+import { RequestLoggerMiddleware } from './middleware/request-logger.middleware';
 
 
 
@@ -37,8 +38,8 @@ ConfigModule.forRoot({
   providers: [AppService],
 })
 export class AppModule  {
-  // configure(consumer:MiddlewareConsumer){
-  //   consumer.apply(LoggerMiddleware).forRoutes({path:'*',method:RequestMethod.ALL})
-  // }
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestLoggerMiddleware).forRoutes('*');
+  }
   
 }

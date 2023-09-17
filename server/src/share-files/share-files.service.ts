@@ -134,7 +134,6 @@ export class ShareFilesService {
         },
       },
     ]);
-    console.log(sharedFolders);
     return sharedFolders;
   }
 

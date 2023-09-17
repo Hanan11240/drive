@@ -35,9 +35,12 @@
     "mongo-gridfs": "github:khoapmd/mongo-gridfs",
     "mongoose": "^7.4.2",
     "multer-gridfs-storage": "^5.0.2",
+    "nest-winston": "^1.9.4",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
-    "save": "^2.9.0"
+    "save": "^2.9.0",
+    "winston": "^3.10.0",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
