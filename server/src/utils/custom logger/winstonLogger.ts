@@ -38,14 +38,18 @@ export class Logger {
           level,
           message,
           timestamp:timestamp || '',
-          error: {},
+          error:error || 'No error message found',
+          method:additionalInfo?.method || '',
           body:additionalInfo?.body || '',
           url:additionalInfo?.originalUrl || '',
-          userAgent:additionalInfo?.userAgent || ''
+          userAgent:additionalInfo?.userAgent || '',
+          status:additionalInfo?.status || '',
+          query:additionalInfo?.query || 'No query string passed',
+          params:additionalInfo?.params || 'No params passed'
         };
 
         if (error) {
-          json.error = error.stack || error;
+          json.error = error.stack || error || 'No error message found'; // Check for stack or message property
         }
 
         msg = JSON.stringify(json);

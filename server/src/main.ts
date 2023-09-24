@@ -6,6 +6,7 @@ import { WinstonModule } from 'nest-winston';
 import { transports,format } from 'winston';
 import 'winston-daily-rotate-file'
 import { Logger } from './utils/custom logger/winstonLogger';
+import { AllExceptionFilter } from './utils/Filter/ExceptionFilter';
 
 async function bootstrap() {
   const customLoggerService = new Logger();
@@ -21,6 +22,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.useGlobalFilters(new AllExceptionFilter());
   await app.listen(3000);
 }
 bootstrap();
