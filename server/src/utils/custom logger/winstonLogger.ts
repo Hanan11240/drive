@@ -28,22 +28,24 @@ export class Logger {
 
     // Custom log format tailored to our application's requirements
     this.myFormat = winston.format.printf(
-      ({ level = 'info', message, timestamp, req, err, ...metadata }) => {
-        if (!req) {
-          req = { headers: {} };
+      ({ level = 'info', message,timestamp, additionalInfo,error}) => {
+        if (!additionalInfo) {
+          additionalInfo = { headers: {} };
         }
 
-        let msg = `${timestamp} [${level}] : ${message} `;
+        let msg = `[${level}] : ${message} `;
         const json: any = {
-          timestamp,
           level,
-          ...metadata,
           message,
+          timestamp:timestamp || '',
           error: {},
+          body:additionalInfo?.body || '',
+          url:additionalInfo?.originalUrl || '',
+          userAgent:additionalInfo?.userAgent || ''
         };
 
-        if (err) {
-          json.error = err.stack || err;
+        if (error) {
+          json.error = error.stack || error;
         }
 
         msg = JSON.stringify(json);
@@ -53,13 +55,13 @@ export class Logger {
 
     this.createLoggerConfig = {
       format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.splat(),
-        winston.format.errors({ stack: true }),
-        winston.format.json(),
         winston.format.timestamp({
           format: 'YYYY-MM-DD HH:mm:ss',
         }),
+        winston.format.splat(),
+        winston.format.errors({ stack: true }),
+        winston.format.json(),
+      
         this.myFormat,
       ),
 

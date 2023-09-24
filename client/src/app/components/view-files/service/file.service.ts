@@ -17,6 +17,7 @@ export class FileService {
   }
   viewFile(fileId: string): Observable<HttpResponse<Blob>> {
     return this.http.get(`${this.serverUrl}files/${fileId}`, { responseType: 'blob', observe: 'response' })
+    // return this.http.get('https://a391-122-161-242-12.ngrok-free.app/api/v1/drive/file-preview/6506009a1f30691c347a50ae',{responseType:'blob',observe:'response'})
   }
   downloadFile(fileId: string): Observable<HttpResponse<Blob>> {
     return this.http.get(`${this.serverUrl}files/download/${fileId}`, { responseType: 'blob', observe: 'response' })
@@ -30,14 +31,16 @@ export class FileService {
 
     const contentType = response.headers.get('content-type');
     const responseBody = response.body;
+    console.log(contentType)
 
     if (responseBody !== null && contentType !== null) {
-      const blob = new Blob([responseBody], { type: contentType });
+      const blob = new Blob([responseBody], { type: 'video/mp4' });
 
       // Create a blob URL and open it in a new tab
 
       if (type === 'preview') {
         const blobUrl = window.URL.createObjectURL(blob);
+        console.log('url',blobUrl)
         window.open(blobUrl, '_blank');
 
         // Clean up the blob URL when the tab is closed

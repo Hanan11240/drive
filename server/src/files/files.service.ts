@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { MongoGridFS } from 'mongo-gridfs';
-import mongoose, { Connection, Model, Types } from 'mongoose';
+import { Connection, Model, Types } from 'mongoose';
 import { GridFSBucketReadStream } from 'mongodb';
 import { FileInfoVm } from './model/fileINfoVm';
 import { UserDTO } from 'src/auth/dto/user.dto';

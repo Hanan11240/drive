@@ -9,11 +9,12 @@ import { AuthService } from '../auth.service';
 import { UserModel } from '../model/user.model';
 import { SuccessMessage } from 'src/app/utils/models/utilsModel';
 import { UtilService } from 'src/app/utils/Services/utils.service';
+import { AddressFormGroup } from 'src/app/utils/components/address-from-group.component';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, RouterModule],
+  imports: [CommonModule, MatFormFieldModule, ReactiveFormsModule, MatInputModule, MatButtonModule, RouterModule,AddressFormGroup],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
@@ -31,11 +32,11 @@ export class RegisterComponent {
       validators: [Validators.required, Validators.email]
     }],
     password: ['', [Validators.required, Validators.minLength(8)]],
-    name: ['', [Validators.required, Validators.minLength(3)]]
+    name: ['', [Validators.required, Validators.minLength(3)]],
+    
   });
 
   onSubmit() {
-
     this.authService.register(this.registrationForm.value as UserModel).subscribe({
       next: (response: SuccessMessage) => {
       },

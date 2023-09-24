@@ -18,7 +18,7 @@ import { FileResponseVm } from './model/file-response-vm.model';
 import { ObjectId } from 'mongoose';
 @Controller('files')
 export class FilesController {
-  constructor(private readonly filesService: FilesService) {}
+  constructor(private readonly filesService: FilesService) { }
 
   @Post(':userId')
   @UseInterceptors(FilesInterceptor('file'))
@@ -58,7 +58,7 @@ export class FilesController {
   }
 
   @Get(':id')
-  async getFile(@Param('id') id: string,  @Res({ passthrough: true }) res): Promise<StreamableFile>  {
+  async getFile(@Param('id') id: string, @Res({ passthrough: true }) res): Promise<StreamableFile> {
     const file = await this.filesService.findInfo(id);
     const filestream = await this.filesService.readStream(id);
     if (!filestream) {
@@ -68,11 +68,11 @@ export class FilesController {
       );
     }
     res.header('Content-Type', file.contentType);
-    return new StreamableFile(filestream);  
+    return new StreamableFile(filestream);
   }
 
   @Get('download/:id')
-  async downloadFile(@Param('id') id: string, @Res({passthrough:true}) res) {
+  async downloadFile(@Param('id') id: string, @Res({ passthrough: true }) res) {
     const file = await this.filesService.findInfo(id);
     const filestream = await this.filesService.readStream(id);
     if (!filestream) {
@@ -83,14 +83,14 @@ export class FilesController {
     }
     res.header('Content-Type', file.contentType);
     res.header('Content-Disposition', 'attachment; filename=' + file.filename);
-    return new StreamableFile(filestream);  
+    return new StreamableFile(filestream);
   }
   @Delete('delete/:id/:userId')
   async deleteFile(
     @Param() param: { userId: string; id: string },
-    @Query() query:{folderId:string}
+    @Query() query: { folderId: string }
   ): Promise<FileResponseVm> {
-    const {folderId} = query
+    const { folderId } = query
     const { id, userId } = param;
     const file = await this.filesService.findInfo(id);
     const filestream = await this.filesService.deleteFile(id);
@@ -100,7 +100,7 @@ export class FilesController {
         HttpStatus.EXPECTATION_FAILED,
       );
     }
-    await this.filesService.updateUserConsumedSpace(userId, file, id,folderId);
+    await this.filesService.updateUserConsumedSpace(userId, file, id, folderId);
     return {
       message: 'File has been deleted',
       file: file,
@@ -109,17 +109,17 @@ export class FilesController {
   @Get('parent-files/:userId')
   async parentFiles(
     @Param() param: { userId: string },
-  ): Promise<{fileId:ObjectId,fileName:string,isParent:boolean}[]> {
+  ): Promise<{ fileId: ObjectId, fileName: string, isParent: boolean }[]> {
     const { userId } = param;
-    const fileIds:{fileId:ObjectId,fileName:string,isParent:boolean}[] = await this.filesService.parentFiles(userId);
+    const fileIds: { fileId: ObjectId, fileName: string, isParent: boolean }[] = await this.filesService.parentFiles(userId);
     return fileIds;
   }
 
- @Get('child-files/:userId')
- async childFiles(@Param() param:{userId:string},@Query() query:{FolderId:string}){
-  const {userId} = param
-  const {FolderId} = query
-  const childFiles = await this.filesService.childFiles(userId,FolderId);
-  return childFiles
- } 
+  @Get('child-files/:userId')
+  async childFiles(@Param() param: { userId: string }, @Query() query: { FolderId: string }) {
+    const { userId } = param
+    const { FolderId } = query
+    const childFiles = await this.filesService.childFiles(userId, FolderId);
+    return childFiles
+  }
 }

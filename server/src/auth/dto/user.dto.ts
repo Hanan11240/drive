@@ -1,6 +1,5 @@
 
 import { IsArray, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, isArray } from 'class-validator';
-import { ObjectId } from 'mongoose';
 export class UserDTO {
   @IsString()
   @IsNotEmpty()

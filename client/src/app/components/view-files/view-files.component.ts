@@ -75,6 +75,8 @@ export class ViewFilesComponent {
     this.fileService.viewFile(fileId).subscribe({
       next: (response: HttpResponse<Blob>) => {
         this.fileService.previewOrDownloadFile(response, 'preview')
+      },error:(error:any)=>{
+        console.log(error)
       }
     })
   }
