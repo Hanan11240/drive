@@ -32,4 +32,13 @@ async login(authModel: Pick<UserDTO, "email" | "password">) {
 
  return userExists._id
 }
+
+async validateuser(email:string,password:string):Promise<any>{
+  const userExists = await this.userModelDto.findOne({email:email})
+if(userExists && userExists.password ==  password){
+  const {password,...result}= userExists;
+  return result
+}
+return null
+}
 }

@@ -18,7 +18,6 @@ export class AllExceptionFilter implements ExceptionFilter {
         } else {
             error = { mesage: (exception as Error).message }
         }
-       
     
         this.logger.log({
             level: 'error',

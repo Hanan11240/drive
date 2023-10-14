@@ -8,7 +8,6 @@ import { FileService } from './service/file.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import Swal from 'sweetalert2'
-import { BehaviorSubject, Observable } from 'rxjs';
 import { SharedFilesService } from '../shared-files/shared-file.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ShareDialogComponent } from 'src/app/utils/dialog/share-dialog/share-dialog.component';
@@ -30,10 +29,8 @@ export class ViewFilesComponent {
 
   ngOnInit() {
     this.sharedFiles.isShared$.subscribe((value: boolean) => {
-      console.log(value)
       this.isShared = value;
     });
-    console.log(this.isShared)
     this.userId = localStorage.getItem('userId') || ''
     this.route.queryParamMap.subscribe({
       next: (params: ParamMap) => {

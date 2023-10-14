@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { AuthModel, UserModel } from './model/user.model';
 import { SuccessMessage } from 'src/app/utils/models/utilsModel';
 import { environment } from 'src/environments/environment';
+import { catchError, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,6 @@ export class AuthService {
     return this.http.post<SuccessMessage>(`${this.serverUrl}auth/signUp`,UserModel)
   }
   login(AuthModel:AuthModel){
-    return this.http.post<{_id:string}>(`${this.serverUrl}auth/login`,AuthModel)
+    return this.http.post<{_id:string}>(`${this.serverUrl}auth/login`,AuthModel)   
   }
 }

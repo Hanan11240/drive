@@ -7,6 +7,7 @@ import { transports,format } from 'winston';
 import 'winston-daily-rotate-file'
 import { Logger } from './utils/custom logger/winstonLogger';
 import { AllExceptionFilter } from './utils/Filter/ExceptionFilter';
+import session from 'express-session';
 
 async function bootstrap() {
   const customLoggerService = new Logger();
@@ -23,6 +24,12 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new AllExceptionFilter());
+  // app.use(session({
+  //   secret:'',
+  //   resave:false,
+  //   saveUninitialized:false,
+  //   cookie:{maxAge:60000,secure:false,httpOnly:true}
+  // }))
   await app.listen(3000);
 }
 bootstrap();
