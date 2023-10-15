@@ -4,7 +4,10 @@ import { UserDTO } from './dto/user.dto';
 import { Response } from 'express';
 import { AuthDto } from './dto/auth.dto';
 import { Request } from 'express'
-import { LocalAuthGuard } from './guard/local-auth.guard';
+import { AuthGuard } from './guard/auth-guard';
+import { Public } from './guard/public-routes';
+
+
 
 @Controller('auth')
 export class AuthController {
@@ -17,10 +20,11 @@ export class AuthController {
     res.status(HttpStatus.OK).json({ message: 'User registered successfully' })
   }
 
-  @UseGuards(LocalAuthGuard)
+// @Public()
   @Post('login')
-  async login(@Res() res: Response, @Body() authModel: AuthDto, @Req() req: Request) {
+  async login( @Body() authModel: AuthDto, @Req() req: Request) {
     const user = await this.authService.login(authModel)
-    return req.user
+    return user
+    // res.status(200).json(user)
   }
 }

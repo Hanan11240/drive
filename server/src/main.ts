@@ -7,7 +7,6 @@ import { transports,format } from 'winston';
 import 'winston-daily-rotate-file'
 import { Logger } from './utils/custom logger/winstonLogger';
 import { AllExceptionFilter } from './utils/Filter/ExceptionFilter';
-import session from 'express-session';
 
 async function bootstrap() {
   const customLoggerService = new Logger();

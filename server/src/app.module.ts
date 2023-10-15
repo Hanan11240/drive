@@ -22,7 +22,6 @@ ConfigModule.forRoot({
     inject:[ConfigService],
     useFactory: (configService: ConfigService) => {
       const resolvedMongoUri = configService.get<string>('MONGODB_URI');
-      console.log('Resolved MongoDB URI:', resolvedMongoUri);
       return {
         uri: resolvedMongoUri,
       }; 
